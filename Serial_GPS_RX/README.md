@@ -22,3 +22,5 @@ We are just using the Arduino's built-in USB-to-TTL for interfacing the GPS modu
 Serial monitor's output (GPS wasn't achive locked condition yet)
 ![alt text](https://github.com/handiko/Arduino-Project/blob/master/Serial_GPS_RX/Arduino-UNO_CN-06_GPS_output.png)
 
+...
+
