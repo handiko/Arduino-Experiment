@@ -25,4 +25,5 @@ though they do need seem to be structured with the intent of for standalone use.
 * `make`
 * `sudo make install`
 
+![alt text](https://github.com/handiko/Arduino-Project/blob/master/Serial_GPS_RX/Arduino-UNO_CN-06_GPS_output.png)
 
