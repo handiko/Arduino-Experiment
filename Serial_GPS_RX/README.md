@@ -1,29 +1,24 @@
-# gr-pulseaudio
+# Serial GPS RX
 
-Audio source and sink blocks for GNU Radio using PulseAudio.
-
-Current status: works, but needs review from experienced GNU Radio and
-PulseAudio developers.
-
-[GQRX also appears to have PulseAudio sources and sinks](https://github.com/csete/gqrx/tree/master/pulseaudio),
-though they do need seem to be structured with the intent of for standalone use.
+Using an Arduino UNO board and GPS module uBlox CN-06 as a GPS receiver.
 
 ## Dependencies
 
-* GNU Radio (of course)
-* libpulse-dev (if you don't have it yet, run `sudo apt-get install libpulse-dev -y`)
+* Arduino IDE (of course)
+* GPS serial output is read using Arduino IDE's Serial Monitor.
 
 ## Installation
 
-* `git clone https://github.com/bitglue/gr-pulseaudio`
-* `cd gr-pulseaudio`
-* `mkdir build`
-* `cd build`
-* `cmake ../ -DCMAKE_INSTALL_PREFIX=/usr`
-      or
-  `cmake ../ -DCMAKE_INSTALL_PREFIX=/usr/local`
-* `make`
-* `sudo make install`
+* Give the GPS module the proper +5V power and GND.
+* Connect TXD pin from GPS module to the pin-1 of the Arduino UNO.
+* Set serial monitor's baudrate to 9600 baud.
+* Upload the skecth.
 
+## Operation
+
+Basically the Arduino UNO does nothing except to set it's pin-1 as an input, to ensure high impedance condition.
+We are just using the Arduino's built-in USB-to-TTL for interfacing the GPS module to the computer.
+
+Serial monitor's output (GPS wasn't achive locked condition yet)
 ![alt text](https://github.com/handiko/Arduino-Project/blob/master/Serial_GPS_RX/Arduino-UNO_CN-06_GPS_output.png)
 
