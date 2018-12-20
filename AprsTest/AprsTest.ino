@@ -8,7 +8,7 @@ const char points=20;
 const char dacBits=6;
 char dacPins[dacBits];
 const char dacPinOffset=2;
-const float baudAdj=1.0;
+const float baudAdj=1.04;
 const float dacAdj_1200=0.6280*baudAdj;
 const float dacAdj_2400=0.3678*baudAdj;
 const unsigned int dacDelay1200=(unsigned int)(dacAdj_1200*1000000.0/(1200.0*points));
@@ -168,7 +168,7 @@ void send_aprs_string(void)
   static unsigned char crc_hi;
 
   // FLAGS
-  for(int n=0;n<150;n++)
+  for(int n=0;n<120;n++)
     send_aprs_char(flag);
 
   crc = 0xffff;
@@ -250,10 +250,10 @@ void setup() {
 }
 
 void loop() {
-  send_lorem();
+  //send_lorem();
   delay(1000);
   send_aprs_string();
-  delay(1000);
+  //delay(1000);
   Serial.println(bit_counter);
   bit_counter=0;
   nada^=1;
