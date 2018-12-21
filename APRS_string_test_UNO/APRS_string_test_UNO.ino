@@ -18,14 +18,6 @@ const float adj_2400 = 1.0 * baud_adj;
 const unsigned int tc1200 = (unsigned int)(0.5 * adj_1200 * 1000000.0 / 1200.0);
 const unsigned int tc2400 = (unsigned int)(0.5 * adj_2400 * 1000000.0 / 2400.0);
 
-const char points = 20;
-unsigned char phAcc[points];
-const char dacRes = 6;
-const unsigned char dacAmp = pow(2, dacRes);
-const char dacOff = dacAmp / 2;
-const unsigned int _tc_1200 = (unsigned int)(adj_1200 * 1000000.0 / (1200.0 * points));
-const unsigned int _tc_2400 = (unsigned int)(adj_2400 * 1000000.0 / (2400.0 * points));
-
 /*
  * 
  */
@@ -53,49 +45,25 @@ void send_ax25(void);
  * 
  */
 
-void set_wave(bool state, bool _nada)
-{
-  digitalWrite(2, state);
-  digitalWrite(3, state);
-  digitalWrite(4, state);
-  digitalWrite(5, state);
-  digitalWrite(6, state);
-  digitalWrite(7, state);
-
-  if(_nada)
-    delayMicroseconds(tc1200);
-  else
-    delayMicroseconds(tc2400);
-}
-
-void init_dac(void)
-{
-  pinMode(2, OUTPUT);
-  pinMode(3, OUTPUT);
-  pinMode(4, OUTPUT);
-  pinMode(5, OUTPUT);
-  pinMode(6, OUTPUT);
-  pinMode(7, OUTPUT);
-  
-  for(int i=0;i<points;i++)
-  {
-    phAcc[i] = (unsigned char)(dacOff + (0.8 * dacAmp * sin(2 * 3.1415 * i / points)));
-  }
-}
-
 void set_nada(bool in_nada)
 {
   if(nada)
   {
-    set_wave(HIGH, nada);
-    set_wave(LOW, nada);
+    digitalWrite(2, HIGH);
+    delayMicroseconds(tc1200);
+    digitalWrite(2, LOW);
+    delayMicroseconds(tc1200);
   }
   else
   {
-    set_wave(HIGH, nada);
-    set_wave(LOW, nada);
-    set_wave(HIGH, nada);
-    set_wave(LOW, nada);
+    digitalWrite(2, HIGH);
+    delayMicroseconds(tc2400);
+    digitalWrite(2, LOW);
+    delayMicroseconds(tc2400);
+    digitalWrite(2, HIGH);
+    delayMicroseconds(tc2400);
+    digitalWrite(2, LOW);
+    delayMicroseconds(tc2400);
   }
 }
 
@@ -191,8 +159,6 @@ void setup()
 {
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(2, OUTPUT);
-
-  init_dac();
 }
 
 void loop()
