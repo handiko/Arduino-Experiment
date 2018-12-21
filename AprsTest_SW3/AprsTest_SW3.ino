@@ -36,20 +36,20 @@ void set_nada(bool in_nada)
   if(nada)
   {
     digitalWrite(2, HIGH);
-    delayMicroseconds();
+    delayMicroseconds(tc1200);
     digitalWrite(2, LOW);
-    delayMicroseconds();
+    delayMicroseconds(tc1200);
   }
   else
   {
     digitalWrite(2, HIGH);
-    delayMicroseconds();
+    delayMicroseconds(tc2400);
     digitalWrite(2, LOW);
-    delayMicroseconds();
+    delayMicroseconds(tc2400);
     digitalWrite(2, HIGH);
-    delayMicroseconds();
+    delayMicroseconds(tc2400);
     digitalWrite(2, LOW);
-    delayMicroseconds();
+    delayMicroseconds(tc2400);
   }
 }
 
