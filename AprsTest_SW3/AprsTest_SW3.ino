@@ -7,10 +7,15 @@ unsigned char send_bytes[]={
   0x40, 0x40, 0x68, 0xA4, 0x8A, 0x98, 0x82, 0xB2, 0x40, 0x61, 0x03,
   0xF0, 0x54, 0x65, 0x73, 0x74};
 
+char stuff=0;
+unsigned short crc=0xffff;
+bool nada=0;
+
 /*
  * 
  */
 
+void set_nada(bool in_nada);
 void send_char(unsigned char in_byte);
 void send_ax25(void);
 
@@ -20,7 +25,19 @@ void send_ax25(void);
 
 void send_char(unsigned char in_byte)
 {
-  
+  if(in_byte==0x7e)
+  {
+    for(int j=0;j<8;j++)
+    {
+      if(in_byte & 0x01)
+        set_nada(nada);
+      else
+      {
+        nada^=1;
+        set_nada(nada);
+      }
+    }
+  }
 }
 
 void send_ax25(void)
