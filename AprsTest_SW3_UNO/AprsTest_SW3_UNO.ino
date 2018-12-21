@@ -138,7 +138,7 @@ void send_ax25(void)
   send_char('E'<<1);
   send_char('2'<<1);
   send_char(' '<<1);
-  send_char(('2'<<1)+1);
+  send_char(2 + 1);
 
   send_char(0x03);
   send_char(0xf0);
@@ -172,6 +172,6 @@ void loop()
   Serial.println(' ');
   Serial.println("Printing stopped");
   Serial.println(' ');
-  delay(1000);
+  delay(3000);
   nada ^= 1;
 }
