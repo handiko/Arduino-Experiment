@@ -11,6 +11,12 @@ char stuff=0;
 unsigned short crc=0xffff;
 bool nada=0;
 
+const float baud_adj = 1.0;
+const float adj_1200 = 1.0 * baud_adj;
+const float adj_2400 = 1.0 * baud_adj;
+const unsigned int tc1200 = (unsigned int)(0.5 * adj_1200 * 1000000.0 / 1200.0);
+const unsigned int tc2400 = (unsigned int)(0.5 * adj_2400 * 1000000.0 / 2400.0);
+
 /*
  * 
  */
@@ -24,6 +30,28 @@ void send_ax25(void);
 /*
  * 
  */
+
+void set_nada(bool in_nada)
+{
+  if(nada)
+  {
+    digitalWrite(2, HIGH);
+    delayMicroseconds();
+    digitalWrite(2, LOW);
+    delayMicroseconds();
+  }
+  else
+  {
+    digitalWrite(2, HIGH);
+    delayMicroseconds();
+    digitalWrite(2, LOW);
+    delayMicroseconds();
+    digitalWrite(2, HIGH);
+    delayMicroseconds();
+    digitalWrite(2, LOW);
+    delayMicroseconds();
+  }
+}
 
 void send_crc(void)
 {
