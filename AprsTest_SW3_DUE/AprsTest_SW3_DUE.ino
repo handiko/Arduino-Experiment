@@ -6,7 +6,7 @@ char stuff=0;
 unsigned short crc=0xffff;
 bool nada=0;
 
-const float baud_adj = 1.0;
+const float baud_adj = 1.01;
 const float adj_1200 = 1.0 * baud_adj;
 const float adj_2400 = 1.0 * baud_adj;
 const unsigned int tc1200 = (unsigned int)(0.5 * adj_1200 * 1000000.0 / 1200.0);
@@ -120,10 +120,10 @@ void send_ax25(void)
   
   send_char('A'<<1);  
   send_char('P'<<1); 
-  send_char('A'<<1); 
-  send_char('R'<<1);
-  send_char('D'<<1); 
-  send_char('U'<<1);
+  send_char('R'<<1); 
+  send_char('S'<<1);
+  send_char(' '<<1); 
+  send_char(' '<<1);
   send_char('0'<<1);
 
   send_char('Y'<<1);
@@ -132,7 +132,7 @@ void send_ax25(void)
   send_char('S'<<1); 
   send_char('D'<<1);
   send_char('L'<<1);
-  send_char('1'<<1);
+  send_char('2'<<1);
 
   send_char('W'<<1);
   send_char('I'<<1); 
