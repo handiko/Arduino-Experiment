@@ -16,12 +16,29 @@ bool nada=0;
  */
 
 void set_nada(bool in_nada);
+void send_crc(void);
+void calc_crc(bool in_bit);
 void send_char(unsigned char in_byte);
 void send_ax25(void);
 
 /*
  * 
  */
+
+void send_crc(void)
+{
+  
+}
+
+void calc_crc(bool in_bit)
+{
+  bool xor_in = (crc >> 15) ^ in_bit;
+
+  crc <<= 1;
+
+  if(xor_in)
+    crc ^= 0x1021;
+}
 
 void send_char(unsigned char in_byte)
 {
@@ -45,6 +62,8 @@ void send_char(unsigned char in_byte)
   {
     for(int j=0;j<8;j++)
     {
+      calc_crc(in_byte & 0x01);
+      
       if(in_byte & 0x01)
       {
         set_nada(nada);
@@ -105,6 +124,8 @@ void send_ax25(void)
   send_char(0x65);  //  e
   send_char(0x73);  //  s
   send_char(0x74);  //  t
+
+  send_crc();       //  CRC
 
   for(int i=0;i<3;i++)
     send_char(0x7e);
