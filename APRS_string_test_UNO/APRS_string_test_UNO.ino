@@ -16,6 +16,17 @@ const unsigned int tc2400 = (unsigned int)(0.5 * adj_2400 * 1000000.0 / 2400.0);
  * 
  */
 
+const unsigned char mycall[]={"YD1SDL1"};
+const unsigned char dest[]={"APRS   "};
+const unsigned char digi[]={"WIDE2 "};
+const char digi_ssid=2;
+
+unsigned char strings[]={" Hello World!"};
+
+/*
+ * 
+ */
+
 void set_nada(bool in_nada);
 void send_crc(void);
 void calc_crc(bool in_bit);
@@ -105,47 +116,32 @@ void send_char(unsigned char in_byte)
 
 void send_ax25(void)
 {
-  for(int i=0;i<5;i++)
+  char temp;
+  
+  for(int i=0;i<100;i++)
     send_char(0x7e);
 
   crc = 0xffff;
-  
-  send_char('A'<<1);  
-  send_char('P'<<1); 
-  send_char('Z'<<1); 
-  send_char('T'<<1);
-  send_char('2'<<1); 
-  send_char('3'<<1);
-  send_char('p'<<1);
 
-  send_char('L'<<1);
-  send_char('S'<<1);
-  send_char('S'<<1);
-  send_char('T'<<1); 
-  send_char('T'<<1);
-  send_char('F'<<1);
-  send_char('9'<<1);
+  for(int i=0;i<7;i++)
+    send_char(dest[i] << 1);
 
-  send_char('W'<<1);
-  send_char('I'<<1); 
-  send_char('D'<<1);
-  send_char('E'<<1);
-  send_char('2'<<1);
-  send_char(' '<<1);
-  send_char((2<<1) + 1);
+  for(int i=0;i<7;i++)
+    send_char(mycall[i] << 1);
+
+  for(int i=0;i<6;i++)
+    send_char(digi[i] << 1);
+  send_char((digi_ssid << 1) + 1);
 
   send_char(0x03);
   send_char(0xf0);
 
-  send_char('.');
-  //send_char('T');
-  //send_char('E');
-  //send_char('S');
-  //send_char('T');
+  for(int i=0;i<sizeof(strings);i++)
+    send_char(strings[i]);
   
   send_crc();
 
-  for(int i=0;i<2;i++)
+  for(int i=0;i<3;i++)
     send_char(0x7e);
 }
 

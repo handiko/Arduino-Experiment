@@ -12,7 +12,7 @@ const float adj_2400 = 1.0 * baud_adj;
 const unsigned int tc1200 = (unsigned int)(0.5 * adj_1200 * 1000000.0 / 1200.0);
 const unsigned int tc2400 = (unsigned int)(0.5 * adj_2400 * 1000000.0 / 2400.0);
 
-bool enable_print = 1;
+bool enable_print = 0;
 
 /*
  * 
@@ -116,7 +116,7 @@ void send_char(unsigned char in_byte)
 
 void send_ax25(void)
 {
-  for(int i=0;i<5;i++)
+  for(int i=0;i<100;i++)
     send_char(0x7e);
 
   crc = 0xffff;
