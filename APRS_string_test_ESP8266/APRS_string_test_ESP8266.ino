@@ -24,12 +24,12 @@ const unsigned int tc2400 = (unsigned int)(0.5 * adj_2400 * 1000000.0 / 2400.0);
  * 
  */
 
-const unsigned char mycall[]={"YD1SDL-1"};
-const unsigned char dest[]={"APRS   "};
+const unsigned char mycall[]={"YD1SDL2"};
+const unsigned char dest[]={"APARDU "};
 const unsigned char digi[]={"WIDE2 "};
 const char digi_ssid=2;
 
-unsigned char strings[]={" Hello World!"};
+unsigned char strings[]={"Hello ! This is APRS Transmitter using an ESP8266 module"};
 
 /*
  * 
@@ -169,5 +169,5 @@ void loop()
   digitalWrite(LED_BUILTIN, LOW);
   send_ax25();
   digitalWrite(LED_BUILTIN, HIGH);
-  nada ^= 1;
+  //nada ^= 1;
 }
