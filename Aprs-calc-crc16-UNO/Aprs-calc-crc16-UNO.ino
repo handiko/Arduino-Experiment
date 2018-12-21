@@ -2,10 +2,7 @@
  * 
  */
 
-char stuff=0;
 unsigned short crc=0xffff;
-bool nada=0;
-
 bool enable_print = 1;
 
 /*
@@ -51,31 +48,17 @@ void send_char(unsigned char in_byte)
   {
     in_bits = (in_byte >> j) & 0x01;
 
-    if(in_byte == 0x7e)
-      stuff=0;
-
-    else
-      calc_crc(in_bits);
+    calc_crc(in_bits);
 
     if(in_bits==0)
     {
       if(enable_print)
         Serial.print(0);
-      nada ^= 1;
-      stuff=0;
     }
     else
     {
       if(enable_print)
         Serial.print(1);
-      stuff++;
-
-      if(stuff==5)
-      {
-        //if(enable_print)  Serial.print(0);
-        nada ^= 1;
-        stuff=0;
-      }
     }
   }
 }
@@ -133,32 +116,20 @@ void setup()
   pinMode(LED_BUILTIN, HIGH);
   pinMode(2, HIGH);
   
-  if(enable_print)
-    Serial.begin(115200);
+  Serial.begin(115200);
 
   delay(2000);
-  if(enable_print)
-  {
-    Serial.println("Printing bit stream");
-    Serial.println(' ');
-  }
+  Serial.println("Printing CRC16-CCITT bit-stream");
+  Serial.println(' ');
   send_ax25();
-  if(enable_print)
-  {
-    Serial.println(" (Calculated)");
-    Serial.println("1100111110110111 (Desired)");
-    Serial.println(' ');
-    Serial.println("Printing stopped");
-    Serial.println(' ');
-  }
+  Serial.println(" (Calculated)");
+  Serial.println("1100111110110111 (Desired)");
+  Serial.println(' ');
+  Serial.println("Printing stopped");
+  Serial.println(' ');
 }
 
 void loop()
 {
-  if(enable_print==0)
-  {
-    delay(2000);
-    send_ax25();
-    nada ^= 1;
-  }
+  
 }
