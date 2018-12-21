@@ -8,6 +8,8 @@
  * 
  */
 
+const char pin = 16;
+
 char stuff=0;
 unsigned short crc=0xffff;
 bool nada=0;
@@ -49,20 +51,20 @@ void set_nada(bool in_nada)
 {
   if(nada)
   {
-    digitalWrite(2, HIGH);
+    digitalWrite(pin, HIGH);
     delayMicroseconds(tc1200);
-    digitalWrite(2, LOW);
+    digitalWrite(pin, LOW);
     delayMicroseconds(tc1200);
   }
   else
   {
-    digitalWrite(2, HIGH);
+    digitalWrite(pin, HIGH);
     delayMicroseconds(tc2400);
-    digitalWrite(2, LOW);
+    digitalWrite(pin, LOW);
     delayMicroseconds(tc2400);
-    digitalWrite(2, HIGH);
+    digitalWrite(pin, HIGH);
     delayMicroseconds(tc2400);
-    digitalWrite(2, LOW);
+    digitalWrite(pin, LOW);
     delayMicroseconds(tc2400);
   }
 }
@@ -158,12 +160,14 @@ void send_ax25(void)
 void setup()
 {
   pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(2, OUTPUT);
+  pinMode(pin, OUTPUT);
 }
 
 void loop()
 {
   delay(2000);
+  digitalWrite(LED_BUILTIN, LOW);
   send_ax25();
+  digitalWrite(LED_BUILTIN, HIGH);
   nada ^= 1;
 }
