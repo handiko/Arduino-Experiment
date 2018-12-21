@@ -2,6 +2,12 @@
  * 
  */
 
+#include <math.h>
+
+/*
+ * 
+ */
+
 char stuff=0;
 unsigned short crc=0xffff;
 bool nada=0;
@@ -12,11 +18,19 @@ const float adj_2400 = 1.0 * baud_adj;
 const unsigned int tc1200 = (unsigned int)(0.5 * adj_1200 * 1000000.0 / 1200.0);
 const unsigned int tc2400 = (unsigned int)(0.5 * adj_2400 * 1000000.0 / 2400.0);
 
+const char points = 20;
+unsigned char phAcc[points];
+const char dacRes = 6;
+const unsigned char dacAmp = pow(2, dacRes);
+const char dacOff = dacAmp / 2;
+const unsigned int _tc_1200 = (unsigned int)(adj_1200 * 1000000.0 / (1200.0 * points));
+const unsigned int _tc_2400 = (unsigned int)(adj_2400 * 1000000.0 / (2400.0 * points));
+
 /*
  * 
  */
 
-const unsigned char mycall[]={"YD1SDL1"};
+const unsigned char mycall[]={"YD1SDL-1"};
 const unsigned char dest[]={"APRS   "};
 const unsigned char digi[]={"WIDE2 "};
 const char digi_ssid=2;
@@ -27,6 +41,8 @@ unsigned char strings[]={" Hello World!"};
  * 
  */
 
+void set_wave(bool _nada);
+void init_dac(void);
 void set_nada(bool in_nada);
 void send_crc(void);
 void calc_crc(bool in_bit);
@@ -36,6 +52,29 @@ void send_ax25(void);
 /*
  * 
  */
+
+void set_wave(bool _nada)
+{
+  unsigned int _tc;
+  
+  if(_nada)
+    _tc = _tc_1200;
+  else
+    _tc = _tc_2400;
+
+  
+}
+
+void init_dac(void)
+{
+  PORTB = 0x00;
+  DDRB = 0x3F;
+  
+  for(int i=0;i<points;i++)
+  {
+    phAcc[i] = (unsigned char)(dacOff + (0.8 * dacAmp * sin(2 * 3.1415 * i / points)));
+  }
+}
 
 void set_nada(bool in_nada)
 {
@@ -116,8 +155,6 @@ void send_char(unsigned char in_byte)
 
 void send_ax25(void)
 {
-  char temp;
-  
   for(int i=0;i<100;i++)
     send_char(0x7e);
 
@@ -153,6 +190,8 @@ void setup()
 {
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(2, OUTPUT);
+
+  init_dac();
 }
 
 void loop()
