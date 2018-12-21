@@ -102,6 +102,7 @@ void send_char(unsigned char in_byte)
 
       if(stuff==5)
       {
+        Serial.print(0);
         nada ^= 1;
         set_nada(nada);
         stuff=0;
@@ -170,6 +171,7 @@ void loop()
   send_ax25();
   Serial.println(' ');
   Serial.println("Printing stopped");
+  Serial.println(' ');
   delay(1000);
   nada ^= 1;
 }
