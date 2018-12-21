@@ -53,22 +53,29 @@ void send_ax25(void);
  * 
  */
 
-void set_wave(bool _nada)
+void set_wave(bool state)
 {
-  unsigned int _tc;
-  
-  if(_nada)
-    _tc = _tc_1200;
-  else
-    _tc = _tc_2400;
+  digitalWrite(2, state);
+  digitalWrite(3, state);
+  digitalWrite(4, state);
+  digitalWrite(5, state);
+  digitalWrite(6, state);
+  digitalWrite(7, state);
 
-  
+  if(state)
+    delayMicroseconds(tc1200);
+  else
+    delayMicroseconds(tc2400);
 }
 
 void init_dac(void)
 {
-  PORTB = 0x00;
-  DDRB = 0x3F;
+  pinMode(2, OUTPUT);
+  pinMode(3, OUTPUT);
+  pinMode(4, OUTPUT);
+  pinMode(5, OUTPUT);
+  pinMode(6, OUTPUT);
+  pinMode(7, OUTPUT);
   
   for(int i=0;i<points;i++)
   {
@@ -78,6 +85,7 @@ void init_dac(void)
 
 void set_nada(bool in_nada)
 {
+  ///*
   if(nada)
   {
     digitalWrite(2, HIGH);
@@ -96,6 +104,9 @@ void set_nada(bool in_nada)
     digitalWrite(2, LOW);
     delayMicroseconds(tc2400);
   }
+  //*/
+
+  //set_wave(in_nada);
 }
 
 void send_crc(void)
