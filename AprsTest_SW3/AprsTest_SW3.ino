@@ -101,6 +101,8 @@ void send_char(unsigned char in_byte)
         nada^=1;
         set_nada(nada);
       }
+
+      in_byte >>= 1;
     }
     crc = 0xffff;
     stuff = 0;
@@ -130,10 +132,10 @@ void send_char(unsigned char in_byte)
         set_nada(nada);
         stuff=0;
       }
+
+      in_byte >>= 1;
     }
   }
-
-  in_byte >>= 1;
 }
 
 void send_ax25(void)
@@ -192,4 +194,5 @@ void setup()
 void loop()
 {
   send_ax25();
+  delay(1000);
 }
