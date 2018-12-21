@@ -195,4 +195,5 @@ void loop()
 {
   send_ax25();
   delay(1000);
+  nada ^= 1;
 }
