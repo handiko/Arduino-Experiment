@@ -161,6 +161,8 @@ void setup()
 {
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(pin, OUTPUT);
+
+  digitalWrite(LED_BUILTIN, HIGH);
 }
 
 void loop()
