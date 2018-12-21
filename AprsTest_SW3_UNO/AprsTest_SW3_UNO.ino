@@ -12,7 +12,7 @@ const float adj_2400 = 1.0 * baud_adj;
 const unsigned int tc1200 = (unsigned int)(0.5 * adj_1200 * 1000000.0 / 1200.0);
 const unsigned int tc2400 = (unsigned int)(0.5 * adj_2400 * 1000000.0 / 2400.0);
 
-bool enable_print = 0;
+bool enable_print = 1;
 
 /*
  * 
@@ -30,23 +30,26 @@ void send_ax25(void);
 
 void set_nada(bool in_nada)
 {
-  if(nada)
+  if(enable_print==0)
   {
-    digitalWrite(2, HIGH);
-    delayMicroseconds(tc1200);
-    digitalWrite(2, LOW);
-    delayMicroseconds(tc1200);
-  }
-  else
-  {
-    digitalWrite(2, HIGH);
-    delayMicroseconds(tc2400);
-    digitalWrite(2, LOW);
-    delayMicroseconds(tc2400);
-    digitalWrite(2, HIGH);
-    delayMicroseconds(tc2400);
-    digitalWrite(2, LOW);
-    delayMicroseconds(tc2400);
+    if(nada)
+    {
+      digitalWrite(2, HIGH);
+      delayMicroseconds(tc1200);
+      digitalWrite(2, LOW);
+      delayMicroseconds(tc1200);
+    }
+    else
+    {
+      digitalWrite(2, HIGH);
+      delayMicroseconds(tc2400);
+      digitalWrite(2, LOW);
+      delayMicroseconds(tc2400);
+      digitalWrite(2, HIGH);
+      delayMicroseconds(tc2400);
+      digitalWrite(2, LOW);
+      delayMicroseconds(tc2400);
+    }
   }
 }
 
@@ -61,8 +64,8 @@ void send_crc(void)
 
 void calc_crc(bool in_bit)
 {
-  unsigned short xor_in = crc ^ in_bit;
-
+  unsigned short xor_in;
+  
   xor_in = crc ^ in_bit;
   crc >>= 1;
 
@@ -113,26 +116,26 @@ void send_char(unsigned char in_byte)
 
 void send_ax25(void)
 {
-  for(int i=0;i<100;i++)
+  for(int i=0;i<5;i++)
     send_char(0x7e);
 
   crc = 0xffff;
   
   send_char('A'<<1);  
   send_char('P'<<1); 
-  send_char('A'<<1); 
-  send_char('R'<<1);
-  send_char('D'<<1); 
-  send_char('U'<<1);
-  send_char('0'<<1);
+  send_char('Z'<<1); 
+  send_char('T'<<1);
+  send_char('2'<<1); 
+  send_char('3'<<1);
+  send_char('p'<<1);
 
-  send_char('Y'<<1);
-  send_char('D'<<1);
-  send_char('1'<<1);
-  send_char('S'<<1); 
-  send_char('D'<<1);
   send_char('L'<<1);
-  send_char('1'<<1);
+  send_char('S'<<1);
+  send_char('S'<<1);
+  send_char('T'<<1); 
+  send_char('T'<<1);
+  send_char('F'<<1);
+  send_char('9'<<1);
 
   send_char('W'<<1);
   send_char('I'<<1); 
@@ -145,15 +148,15 @@ void send_ax25(void)
   send_char(0x03);
   send_char(0xf0);
 
-  send_char(' ');
-  send_char('T');
-  send_char('E');
-  send_char('S');
-  send_char('T');
-
+  send_char('.');
+  //send_char('T');
+  //send_char('E');
+  //send_char('S');
+  //send_char('T');
+  
   send_crc();
 
-  for(int i=0;i<5;i++)
+  for(int i=0;i<2;i++)
     send_char(0x7e);
 }
 
@@ -168,10 +171,7 @@ void setup()
   
   if(enable_print)
     Serial.begin(115200);
-}
 
-void loop()
-{
   delay(2000);
   if(enable_print)
     Serial.println("Printing bit stream");
@@ -182,5 +182,14 @@ void loop()
     Serial.println("Printing stopped");
     Serial.println(' ');
   }
-  nada ^= 1;
+}
+
+void loop()
+{
+  if(enable_print==0)
+  {
+    delay(2000);
+    send_ax25();
+    nada ^= 1;
+  }
 }
