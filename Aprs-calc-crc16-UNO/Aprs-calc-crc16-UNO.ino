@@ -23,8 +23,13 @@ void send_ax25(void);
 
 void send_crc(void)
 {
-  unsigned char crc_lo = crc ^ 0xff;
-  unsigned char crc_hi = (crc >> 8) ^ 0xff;
+  unsigned char crc_lo;
+  unsigned char crc_hi;
+
+  crc = ~crc;
+
+  crc_lo = crc & 0xff;
+  crc_hi = (crc >> 8) & 0xff;
 
   send_char(crc_lo);
   send_char(crc_hi);
@@ -32,13 +37,10 @@ void send_crc(void)
 
 void calc_crc(bool in_bit)
 {
-  unsigned short xor_in;
-  
-  xor_in = crc ^ in_bit;
-  crc >>= 1;
-
-  if(xor_in & 0x01)
-    crc ^= 0x8408;
+  if((crc & 0x01) ^ in_bit)
+    crc = (crc >> 1) ^ 0x8408;
+  else
+    crc >>= 1;
 }
 
 void send_char(unsigned char in_byte)
@@ -118,7 +120,7 @@ void send_ax25(void)
   //send_char('T');
 
   enable_print = 1;
-  
+
   send_crc();
 }
 
