@@ -55,39 +55,22 @@ void set_nada(bool in_nada)
 
 void send_crc(void)
 {
-  for(int j=0;j<16;j++)
-  {
-    if((crc >> (15-j)) & 0x01)
-    {
-      set_nada(nada);
-      stuff++;
-      
-      if(stuff == 5)
-      {
-        nada^=1;
-        set_nada(nada);
-        stuff=0;
-      }
-    }
-    else
-    {
-      nada^=1;
-      set_nada(nada);
-      stuff=0;
-    }
-  }
+  unsigned char crc_lo = crc ^ 0xff;
+  unsigned char crc_hi = (crc >> 8) ^ 0xff;
+
+  send_char(crc_lo);
+  send_char(crc_hi);
 }
 
 void calc_crc(bool in_bit)
 {
-  bool xor_in = (crc >> 15) ^ in_bit;
+  unsigned short xor_in = crc ^ in_bit;
 
-  //crc <<= 1;
+  xor_in = crc ^ in_bit;
+  crc >>= 1;
 
-  if(xor_in)
-    crc ^= 0x1021;
-
-  crc <<= 1;
+  if(xor_in & 0x01)
+    crc ^= 0x8408;
 }
 
 void send_char(unsigned char in_byte)
