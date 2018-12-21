@@ -12,8 +12,6 @@ const float adj_2400 = 1.0 * baud_adj;
 const unsigned int tc1200 = (unsigned int)(0.5 * adj_1200 * 1000000.0 / 1200.0);
 const unsigned int tc2400 = (unsigned int)(0.5 * adj_2400 * 1000000.0 / 2400.0);
 
-bool enable_print = 1;
-
 /*
  * 
  */
@@ -30,26 +28,23 @@ void send_ax25(void);
 
 void set_nada(bool in_nada)
 {
-  if(enable_print==0)
+  if(nada)
   {
-    if(nada)
-    {
-      digitalWrite(2, HIGH);
-      delayMicroseconds(tc1200);
-      digitalWrite(2, LOW);
-      delayMicroseconds(tc1200);
-    }
-    else
-    {
-      digitalWrite(2, HIGH);
-      delayMicroseconds(tc2400);
-      digitalWrite(2, LOW);
-      delayMicroseconds(tc2400);
-      digitalWrite(2, HIGH);
-      delayMicroseconds(tc2400);
-      digitalWrite(2, LOW);
-      delayMicroseconds(tc2400);
-    }
+    digitalWrite(2, HIGH);
+    delayMicroseconds(tc1200);
+    digitalWrite(2, LOW);
+    delayMicroseconds(tc1200);
+  }
+  else
+  {
+    digitalWrite(2, HIGH);
+    delayMicroseconds(tc2400);
+    digitalWrite(2, LOW);
+    delayMicroseconds(tc2400);
+    digitalWrite(2, HIGH);
+    delayMicroseconds(tc2400);
+    digitalWrite(2, LOW);
+    delayMicroseconds(tc2400);
   }
 }
 
@@ -89,23 +84,17 @@ void send_char(unsigned char in_byte)
 
     if(in_bits==0)
     {
-      if(enable_print)
-        Serial.print(0);
       nada ^= 1;
       set_nada(nada);
       stuff=0;
     }
     else
     {
-      if(enable_print)
-        Serial.print(1);
       set_nada(nada);
       stuff++;
 
       if(stuff==5)
       {
-        if(enable_print)
-          Serial.print(0);
         nada ^= 1;
         set_nada(nada);
         stuff=0;
@@ -166,30 +155,13 @@ void send_ax25(void)
 
 void setup()
 {
-  pinMode(LED_BUILTIN, HIGH);
-  pinMode(2, HIGH);
-  
-  if(enable_print)
-    Serial.begin(115200);
-
-  delay(2000);
-  if(enable_print)
-    Serial.println("Printing bit stream");
-  send_ax25();
-  if(enable_print)
-  {
-    Serial.println(' ');
-    Serial.println("Printing stopped");
-    Serial.println(' ');
-  }
+  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(2, OUTPUT);
 }
 
 void loop()
 {
-  if(enable_print==0)
-  {
-    delay(2000);
-    send_ax25();
-    nada ^= 1;
-  }
+  delay(2000);
+  send_ax25();
+  nada ^= 1;
 }
