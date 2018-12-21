@@ -92,6 +92,39 @@ void calc_crc(bool in_bit)
 
 void send_char(unsigned char in_byte)
 {
+  bool in_bits;
+
+  for(int j=0;j<8;j++)
+  {
+    in_bits = (in_byte >> j) & 0x01;
+
+    if(in_byte == 0x7e)
+      stuff=0;
+
+    else
+      calc_crc(in_bits);
+
+    if(in_bits==0)
+    {
+      nada ^= 1;
+      set_nada(nada);
+      stuff=0;
+    }
+    else
+    {
+      set_nada(nada);
+      stuff++;
+
+      if(stuff==5)
+      {
+        nada ^= 1;
+        set_nada(nada);
+        stuff=0;
+      }
+    }
+  }
+  
+  /*
   if(in_byte == 0x7e)
   {
     for(int j=0;j<8;j++)
@@ -138,6 +171,7 @@ void send_char(unsigned char in_byte)
       in_byte >>= 1;
     }
   }
+  */
 }
 
 void send_ax25(void)
