@@ -89,12 +89,14 @@ void send_char(unsigned char in_byte)
 
     if(in_bits==0)
     {
+      Serial.print(0);
       nada ^= 1;
       set_nada(nada);
       stuff=0;
     }
     else
     {
+      Serial.print(1);
       set_nada(nada);
       stuff++;
 
@@ -159,11 +161,15 @@ void setup()
 {
   pinMode(LED_BUILTIN, HIGH);
   pinMode(2, HIGH);
+  Serial.begin(115200);
 }
 
 void loop()
 {
+  Serial.println("Printing bit stream");
   send_ax25();
+  Serial.println(' ');
+  Serial.println("Printing stopped");
   delay(1000);
   nada ^= 1;
 }
