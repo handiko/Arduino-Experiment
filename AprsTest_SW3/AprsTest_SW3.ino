@@ -11,26 +11,57 @@ unsigned char send_bytes[]={
  * 
  */
 
+void send_char(unsigned char in_byte);
+void send_ax25(void);
+
+/*
+ * 
+ */
+
+void send_char(unsigned char in_byte)
+{
+  
+}
+
 void send_ax25(void)
 {
   for(int i=0;i<100;i++)
     send_char(0x7e);
     
-  send_char(0x86);  // C
-  send_char(0xa2);  // Q
-  send_char(0x40);  // sp
-  send_char(0x40);  // sp
-  send_char(0x40);  // sp
-  send_char(0x40);  // sp
-  send_char(0x60);  // 0
+  send_char(0x86);  //  C
+  send_char(0xa2);  //  Q
+  send_char(0x40);  //  sp
+  send_char(0x40);  //  sp
+  send_char(0x40);  //  sp
+  send_char(0x40);  //  sp
+  send_char(0x60);  //  0
 
-  send_char(0xae);  // W
-  send_char(0x64);  // 2
-  send_char(0x8c);  // F
-  send_char(0xa6);  // S
-  send_char(0x40);  // sp
-  send_char(0x40);  // sp
-  send_char(0x68);  // 4
+  send_char(0xae);  //  W
+  send_char(0x64);  //  2
+  send_char(0x8c);  //  F
+  send_char(0xa6);  //  S
+  send_char(0x40);  //  sp
+  send_char(0x40);  //  sp
+  send_char(0x68);  //  4
+
+  send_char(0xa4);  //  R
+  send_char(0x8a);  //  E
+  send_char(0x98);  //  L
+  send_char(0x8a);  //  A
+  send_char(0xb2);  //  Y
+  send_char(0x40);  //  sp
+  send_char(0x61);  //  0
+
+  send_char(0x03);  //  crtl
+  send_char(0xf0);  //  pid
+
+  send_char(0x54);  //  T
+  send_char(0x65);  //  e
+  send_char(0x73);  //  s
+  send_char(0x74);  //  t
+
+  for(int i=0;i<3;i++)
+    send_char(0x7e);
 }
 
 /*
