@@ -41,7 +41,7 @@ unsigned char strings[]={" Hello World!"};
  * 
  */
 
-void set_wave(bool _nada);
+void set_wave(bool state, bool _nada);
 void init_dac(void);
 void set_nada(bool in_nada);
 void send_crc(void);
@@ -53,7 +53,7 @@ void send_ax25(void);
  * 
  */
 
-void set_wave(bool state)
+void set_wave(bool state, bool _nada)
 {
   digitalWrite(2, state);
   digitalWrite(3, state);
@@ -62,7 +62,7 @@ void set_wave(bool state)
   digitalWrite(6, state);
   digitalWrite(7, state);
 
-  if(state)
+  if(_nada)
     delayMicroseconds(tc1200);
   else
     delayMicroseconds(tc2400);
@@ -85,28 +85,18 @@ void init_dac(void)
 
 void set_nada(bool in_nada)
 {
-  ///*
   if(nada)
   {
-    digitalWrite(2, HIGH);
-    delayMicroseconds(tc1200);
-    digitalWrite(2, LOW);
-    delayMicroseconds(tc1200);
+    set_wave(HIGH, nada);
+    set_wave(LOW, nada);
   }
   else
   {
-    digitalWrite(2, HIGH);
-    delayMicroseconds(tc2400);
-    digitalWrite(2, LOW);
-    delayMicroseconds(tc2400);
-    digitalWrite(2, HIGH);
-    delayMicroseconds(tc2400);
-    digitalWrite(2, LOW);
-    delayMicroseconds(tc2400);
+    set_wave(HIGH, nada);
+    set_wave(LOW, nada);
+    set_wave(HIGH, nada);
+    set_wave(LOW, nada);
   }
-  //*/
-
-  //set_wave(in_nada);
 }
 
 void send_crc(void)
