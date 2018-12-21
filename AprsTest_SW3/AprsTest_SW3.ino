@@ -79,7 +79,7 @@ void send_char(unsigned char in_byte)
 
   for(int j=0;j<8;j++)
   {
-    in_bits = in_byte & 0x01;
+    in_bits = (in_byte >> j) & 0x01;
 
     if(in_byte == 0x7e)
       stuff=0;
@@ -105,8 +105,6 @@ void send_char(unsigned char in_byte)
         stuff=0;
       }
     }
-
-    in_byte >>= 1;
   }
 }
 
@@ -139,15 +137,15 @@ void send_ax25(void)
   send_char(' '<<1);
   send_char(('2'<<1)+1);
 
-  send_char(0x03);  //  crtl
-  send_char(0xf0);  //  pid
+  send_char(0x03);
+  send_char(0xf0);
 
-  send_char(0x54);  //  T
-  send_char(0x65);  //  e
-  send_char(0x73);  //  s
-  send_char(0x74);  //  t
+  send_char('T');
+  send_char('E');
+  send_char('S');
+  send_char('T');
 
-  send_crc();       //  CRC
+  send_crc();
 
   for(int i=0;i<3;i++)
     send_char(0x7e);
