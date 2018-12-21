@@ -191,5 +191,5 @@ void setup()
 
 void loop()
 {
-  
+  send_ax25();
 }
