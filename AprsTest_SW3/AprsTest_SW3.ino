@@ -27,7 +27,27 @@ void send_ax25(void);
 
 void send_crc(void)
 {
-  
+  for(int j=0;j<16;j++)
+  {
+    if((crc >> (15-j)) & 0x01)
+    {
+      set_nada(nada);
+      stuff++;
+      
+      if(stuff == 5)
+      {
+        nada^=1;
+        set_nada(nada);
+        stuff=0;
+      }
+    }
+    else
+    {
+      nada^=1;
+      set_nada(nada);
+      stuff=0;
+    }
+  }
 }
 
 void calc_crc(bool in_bit)
