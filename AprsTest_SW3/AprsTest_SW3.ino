@@ -79,7 +79,7 @@ void send_char(unsigned char in_byte)
 
   for(int j=0;j<8;j++)
   {
-    in_bits = (in_byte >> j) & 0x01;
+    in_bits = in_byte & 0x01;
 
     if(in_byte == 0x7e)
       stuff=0;
@@ -105,56 +105,9 @@ void send_char(unsigned char in_byte)
         stuff=0;
       }
     }
+
+    in_byte >>= 1;
   }
-  
-  /*
-  if(in_byte == 0x7e)
-  {
-    for(int j=0;j<8;j++)
-    {
-      if(in_byte & 0x01)
-        set_nada(nada);
-      else
-      {
-        nada^=1;
-        set_nada(nada);
-      }
-
-      in_byte >>= 1;
-    }
-    crc = 0xffff;
-    stuff = 0;
-  }
-
-  else
-  {
-    for(int j=0;j<8;j++)
-    {
-      calc_crc(in_byte & 0x01);
-      
-      if(in_byte & 0x01)
-      {
-        set_nada(nada);
-        stuff++;
-
-        if(stuff == 5)
-        {
-          nada^=1;
-          set_nada(nada);
-          stuff=0;
-        }
-      }
-      else
-      {
-        nada^=1;
-        set_nada(nada);
-        stuff=0;
-      }
-
-      in_byte >>= 1;
-    }
-  }
-  */
 }
 
 void send_ax25(void)
@@ -162,29 +115,29 @@ void send_ax25(void)
   for(int i=0;i<100;i++)
     send_char(0x7e);
     
-  send_char(0x86);  //  C
-  send_char(0xa2);  //  Q
-  send_char(0x40);  //  sp
-  send_char(0x40);  //  sp
-  send_char(0x40);  //  sp
-  send_char(0x40);  //  sp
-  send_char(0x60);  //  0
+  send_char('A'<<1);  
+  send_char('P'<<1); 
+  send_char('R'<<1); 
+  send_char('S'<<1);
+  send_char(' '<<1); 
+  send_char(' '<<1);
+  send_char('0'<<1);
 
-  send_char(0xae);  //  W
-  send_char(0x64);  //  2
-  send_char(0x8c);  //  F
-  send_char(0xa6);  //  S
-  send_char(0x40);  //  sp
-  send_char(0x40);  //  sp
-  send_char(0x68);  //  4
+  send_char('Y'<<1);
+  send_char('D'<<1);
+  send_char('1'<<1);
+  send_char('S'<<1); 
+  send_char('D'<<1);
+  send_char('L'<<1);
+  send_char('2'<<1);
 
-  send_char(0xa4);  //  R
-  send_char(0x8a);  //  E
-  send_char(0x98);  //  L
-  send_char(0x8a);  //  A
-  send_char(0xb2);  //  Y
-  send_char(0x40);  //  sp
-  send_char(0x61);  //  0
+  send_char('W'<<1);
+  send_char('I'<<1); 
+  send_char('D'<<1);
+  send_char('E'<<1);
+  send_char('2'<<1);
+  send_char(' '<<1);
+  send_char(('2'<<1)+1);
 
   send_char(0x03);  //  crtl
   send_char(0xf0);  //  pid
