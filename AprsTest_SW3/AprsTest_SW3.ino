@@ -82,10 +82,12 @@ void calc_crc(bool in_bit)
 {
   bool xor_in = (crc >> 15) ^ in_bit;
 
-  crc <<= 1;
+  //crc <<= 1;
 
   if(xor_in)
     crc ^= 0x1021;
+
+  crc <<= 1;
 }
 
 void send_char(unsigned char in_byte)
