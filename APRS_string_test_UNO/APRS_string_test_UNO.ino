@@ -149,14 +149,13 @@ void send_char(unsigned char in_byte)
 
 void send_ax25(void)
 {
-  int temp;
+  int temp,temp2;
+
+  temp = random(1, 640);
+  temp2 = random(1, 256);
   
   for(int i=0;i<50;i++)
     send_char(0x7e);
-
-//  temp = random(1, 640);
-//  for(int i=0;i<50;i++)
-//    send_char(strings[i + temp]);
 
   for(int i=0;i<3;i++)
     send_char(0x7e);
@@ -177,8 +176,7 @@ void send_ax25(void)
   send_char(0xf0);
 
   send_char(',');
-  temp = random(1, 640);
-  for(int i=0;i<(random(5,256));i++)
+  for(int i=0;i<temp2;i++)
     send_char(strings[i + temp]);
   
   send_crc();
