@@ -20,7 +20,7 @@ bool nada=0;
 
 #ifdef BOARD
   #if BOARD == 1
-    const float baud_adj = 0.98;
+    const float baud_adj = 0.97; //0.98
     #define OUT_PIN 2
   #elif BOARD == 2
     const float baud_adj = 1.01;
@@ -40,7 +40,7 @@ const unsigned int tc2400 = (unsigned int)(0.5 * adj_2400 * 1000000.0 / 2400.0);
  * 
  */
 
-const unsigned char mycall[]={"YD1SDL2"};
+const unsigned char mycall[]={"YD1SDL "};
 const unsigned char dest[]={"APRS   "};
 const unsigned char digi[]={"WIDE2 2"};
 
@@ -120,7 +120,7 @@ void send_char(unsigned char in_byte)
   {
     in_bits = (in_byte >> j) & 0x01;
 
-    if(in_byte == 0x7e)
+    if((in_byte == 0x7e)||(in_byte == 255))
       stuff=0;
 
     else
@@ -154,6 +154,13 @@ void send_ax25(void)
   for(int i=0;i<50;i++)
     send_char(0x7e);
 
+//  temp = random(1, 640);
+//  for(int i=0;i<50;i++)
+//    send_char(strings[i + temp]);
+
+  for(int i=0;i<3;i++)
+    send_char(0x7e);
+
   crc = 0xffff;
 
   for(int i=0;i<7;i++)
@@ -170,8 +177,8 @@ void send_ax25(void)
   send_char(0xf0);
 
   send_char(',');
-  temp = random(1, 600);
-  for(int i=0;i<200;i++)
+  temp = random(1, 640);
+  for(int i=0;i<(random(5,256));i++)
     send_char(strings[i + temp]);
   
   send_crc();
@@ -192,6 +199,6 @@ void setup()
 
 void loop()
 {
-  delay(2000);
+  delay(3456);
   send_ax25();
 }
