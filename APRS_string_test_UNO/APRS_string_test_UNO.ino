@@ -8,7 +8,7 @@
 #define DUE     2
 #define esp     3
 
-#define BOARD   UNO
+#define BOARD   DUE
 
 /*
  * 
@@ -20,7 +20,7 @@ bool nada=0;
 
 #ifdef BOARD
   #if BOARD == 1
-    const float baud_adj = 0.97; //0.98
+    const float baud_adj = 0.97; //0.97
     #define OUT_PIN 2
   #elif BOARD == 2
     const float baud_adj = 1.01;
