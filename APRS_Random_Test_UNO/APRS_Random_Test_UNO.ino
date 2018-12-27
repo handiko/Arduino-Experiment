@@ -31,10 +31,10 @@ bool nada=0;
   #endif
 #endif
 
-float adj_1200 = 1.0;
-float adj_2400 = 1.0;
-const unsigned int tc1200 = (unsigned int)(0.5 * adj_1200 * 1000000.0 / 1200.0);
-const unsigned int tc2400 = (unsigned int)(0.5 * adj_2400 * 1000000.0 / 2400.0);
+const float adj_1200 = 1.0 * baud_adj;
+const float adj_2400 = 1.0 * baud_adj;
+unsigned int tc1200 = (unsigned int)(0.5 * adj_1200 * 1000000.0 / 1200.0);
+unsigned int tc2400 = (unsigned int)(0.5 * adj_2400 * 1000000.0 / 2400.0);
 
 /*
  * 
@@ -44,14 +44,14 @@ const unsigned char mycall[]={"YD1SDL "};
 const unsigned char dest[]={"APRS   "};
 const unsigned char digi[]={"WIDE2 2"};
 
-const char strings[1000]={
+const char strings[860]={
 "b0NWtAXLKj0Sn8WRsakzQS8JN25zAAf3md5ILaYty6jvZHrq1QU1CWfC6tKOMY7cFCopla9sn0bn26zcd9qRHFWflqMcmMwx9ZDmzxrs4cfjiMox4R0pNCB0fm26gDVc\
 dMCZcVOnovLDWUlFHL0m2ULj3SVJonE4swIlemv2miVFJ3hjETh54cubpJhefhHtOGlwwtd64PigxsjzB3oXI6tJR3sCd84sheQis2DrnBZPd4pYdZvv6nx01hDeQNiU\
 YGilAHb7cdqlEIMwhHVaqIgn43JOwQzSMGOWvAbFdSxLyoUd8rYeyVWHxW3tyJS7wjWjsr1UV3RCkPBL4XhMpceV3z0zu6y9rQGWxBwVAbBliOo630lkdmwRkuMB0INN\
 cS4CjELYzsVQnEnX5OMCryDdbFEGwCpDEiFPETlP4EeqsYI6ACIRsM9A8buf1eecrwBKgkT3Ty0mHlOjc4ibBiJCJB5vTzvEbQdfgsLGubfPL1Y8Vb5PAzwCGVotWxUP\
 UPamGgBezXZ4JbOAbUfXGEM1ppuRtam8zk4ePExs1ccD4qumNt0pvfEWyCiIrVuLAK1TGoOG9rE0U0wCaLILlmLiTu1UtPMSTm1sZzEAdunENMmMrHH4bO5W3dL36Njo\
 q7fCVyFGiIurYBcmamYRWHFas3f6DCN7IpOiKo0PM1EIf7eeVegEB4lQZ5EVSXJ4HpGodk4h903bu4KIfm2VilJUUtjiy9lMqTXGliafDss5zBGpL8S7yh1z2NdgD8Tr\
-RGXR4EJ9gSiJTCBiGoSe1uzoeqPNV1pMM7ld7bKbTriOlBNyTCm7lx7cM8J5IsO4iegCSjG0OzwiQEhed7hvS2b78Quw9wDyVQijpxrWBkeFOqk6V656ISLomil0FrAF"
+RGXR4EJ9gSiJTCBiGoSe1uzoeqPNV1pMM7ld7bKbTriOlBNyTCm7lx7cM8J5IsO4iegCSjG0OzwiQEhed7hvS2b78Qu"
 };
 
 int string_len;
@@ -157,27 +157,24 @@ void randomize(void)
 {
   string_len = random(1, 256);
   string_word = random(0, 600);
-  tx_delay = random(100, 6000);
-  
-  #ifdef BOARD
-    #if BOARD == 1
-      baud_adj_rand = random(93, 101) / 100;
-    #elif BOARD == 2
-      baud_adj_rand = random(96, 105) / 100;
-    #elif BOARD == 3
-      baud_adj_rand = random(96, 105) / 100;
-    #endif
-  #endif
+  tx_delay = random(1, 3500);
 
-  adj_1200 = baud_adj_rand;
-  adj_2400 = baud_adj_rand;
+  if((random(1,50) % 2) == 0)
+    nada = 0;
+  else
+    nada = 1;
+
+  baud_adj_rand = 0.01 * random(95, 102);
+
+  tc1200 = (unsigned int)(0.5 * adj_1200 * 1000000.0 / 1200.0);
+  tc2400 = (unsigned int)(0.5 * adj_2400 * 1000000.0 / 2400.0);
 }
 
 void send_ax25(void)
 {
   randomize();
   
-  for(int i=0;i<50;i++)
+  for(int i=0;i<65;i++)
     send_char(0x7e);
 
   crc = 0xffff;
@@ -218,5 +215,7 @@ void setup()
 void loop()
 {
   delay(tx_delay);
+  digitalWrite(LED_BUILTIN, HIGH);
   send_ax25();
+  digitalWrite(LED_BUILTIN, LOW);
 }
