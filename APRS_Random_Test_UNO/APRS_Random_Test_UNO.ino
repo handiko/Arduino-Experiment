@@ -3,6 +3,7 @@
  */
 
 #include <math.h>
+#include <Cmd.h>
 
 #define UNO     1
 #define DUE     2
@@ -44,7 +45,7 @@ const unsigned char mycall[]={"YD1SDL "};
 const unsigned char dest[]={"APRS   "};
 const unsigned char digi[]={"WIDE2 2"};
 
-const char strings[860]={
+PROGMEM const char strings[860]={
 "b0NWtAXLKj0Sn8WRsakzQS8JN25zAAf3md5ILaYty6jvZHrq1QU1CWfC6tKOMY7cFCopla9sn0bn26zcd9qRHFWflqMcmMwx9ZDmzxrs4cfjiMox4R0pNCB0fm26gDVc\
 dMCZcVOnovLDWUlFHL0m2ULj3SVJonE4swIlemv2miVFJ3hjETh54cubpJhefhHtOGlwwtd64PigxsjzB3oXI6tJR3sCd84sheQis2DrnBZPd4pYdZvv6nx01hDeQNiU\
 YGilAHb7cdqlEIMwhHVaqIgn43JOwQzSMGOWvAbFdSxLyoUd8rYeyVWHxW3tyJS7wjWjsr1UV3RCkPBL4XhMpceV3z0zu6y9rQGWxBwVAbBliOo630lkdmwRkuMB0INN\
@@ -56,7 +57,7 @@ RGXR4EJ9gSiJTCBiGoSe1uzoeqPNV1pMM7ld7bKbTriOlBNyTCm7lx7cM8J5IsO4iegCSjG0OzwiQEhe
 
 int string_len;
 int string_word;
-int tx_delay;
+int tx_delay = 1000;
 float baud_adj_rand;
 
 /*
@@ -157,7 +158,7 @@ void randomize(void)
 {
   string_len = random(1, 256);
   string_word = random(0, 600);
-  tx_delay = random(1, 3500);
+  //tx_delay = random(1, 3500);
 
   if((random(1,50) % 2) == 0)
     nada = 0;
@@ -206,10 +207,27 @@ void send_ax25(void)
  * 
  */
 
+void set_delay(int argc, char **argv)
+{
+  if(argc > 0)
+  {
+    tx_delay = cmdStr2Num(argv[1], 10);
+  }
+}
+
+/*
+ * 
+ */
+
 void setup()
 {
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(OUT_PIN, OUTPUT);
+
+  Serial.begin(9600);
+  
+  cmdInit(&Serial);
+  cmdAdd("SETDELAY", set_delay);
 }
 
 void loop()
@@ -218,4 +236,6 @@ void loop()
   digitalWrite(LED_BUILTIN, HIGH);
   send_ax25();
   digitalWrite(LED_BUILTIN, LOW);
+
+  cmdPoll();
 }
