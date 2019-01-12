@@ -8,15 +8,14 @@ AltSoftSerial btSerial;
 char c = ' ';
 bool NL = true;
 
-char serReadBack(AltSoftSerial &serial);
+char serReadBack(AltSoftSerial &ser);
 
-char serReadBack(AltSoftSerial &serial)
+char serReadBack(AltSoftSerial &ser)
 {
   char s;
-  while(serial.available() < 1);
-  if (serial.available() > 0)
+  if (ser.available() > 0)
   {
-    s = serial.read();
+    s = ser.read();
     Serial.print(s);
   }
 
@@ -35,8 +34,12 @@ void setup()
     Serial.println(9600);
 
     delay(1000);
-
-    btSerial.print("AT\r\n");
+    btSerial.print("AT");
+    Serial.println(' ');
+    serReadBack(btSerial);
+    delay(500);
+    btSerial.print("AT");
+    Serial.println(' ');
     serReadBack(btSerial);
 }
  
