@@ -4,6 +4,9 @@
  
 #include <SoftwareSerial.h>
 
+#define SET     true
+#define CLEAR   false
+
 SoftwareSerial BT(8,9);
 
 void BT_sendcmd(SoftwareSerial &ser, String s);
@@ -21,6 +24,11 @@ void BT_setibe1(SoftwareSerial &ser, String s);
 void BT_setibe2(SoftwareSerial &ser, String s);
 void BT_setibe3(SoftwareSerial &ser, String s);
 void BT_setIBeaUUID(SoftwareSerial &ser, String s0, String s1, String s2, String s3);
+void BT_setadvIBea(SoftwareSerial &ser);
+void BT_setadvint(SoftwareSerial &ser, char n);
+void BT_setpower(SoftwareSerial &ser, char n);
+void BT_setpwrm(SoftwareSerial &ser, bool c);
+void BT_setIBea(SoftwareSerial &ser, bool c);
 
 void BT_sendcmd(SoftwareSerial &ser, String s)
 {
@@ -173,6 +181,25 @@ void BT_setIBeaUUID(SoftwareSerial &ser, String s0, String s1, String s2, String
   BT_setibe2(BT, s2);
   BT_setibe3(BT, s3);
 }
+
+void BT_setadvIBea(SoftwareSerial &ser)
+{
+  Serial.flush();
+  Serial.print("\r\n> sending command : AT+ADTY");
+  Serial.println(3);
+  ser.print("AT+ADTY");
+  ser.print(3);
+  
+  BT_readback(ser);
+  BT_readback(ser);
+  delay(100);
+  BT_readback(ser);
+}
+
+void BT_setadvint(SoftwareSerial &ser, char n)
+void BT_setpower(SoftwareSerial &ser, char n)
+void BT_setpwrm(SoftwareSerial &ser, bool c)
+void BT_setIBea(SoftwareSerial &ser, bool c)
  
 void setup() 
 {
