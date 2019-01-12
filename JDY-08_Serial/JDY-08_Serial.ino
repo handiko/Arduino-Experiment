@@ -133,7 +133,7 @@ void BT_setmin(SoftwareSerial &ser, int n)
   ser.print("AT+MINO");
   ser.print(s);
   
-  BT_flush(BT, 100);
+  BT_flush(BT, 500);
 }
 
 void BT_setibe0(SoftwareSerial &ser, String s)
