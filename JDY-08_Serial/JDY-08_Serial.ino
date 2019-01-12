@@ -108,22 +108,30 @@ void BT_setname(SoftwareSerial &ser, String s)
 
 void BT_setmaj(SoftwareSerial &ser, int n)
 {
+  char s[16];
+
+  sprintf(s,"0x%04X",n);
+  
   Serial.flush();
-  Serial.print("\r\n> sending command : AT+MARJ0x");
-  Serial.println(n, HEX);
-  ser.print("AT+MARJ0x");
-  ser.print(n, HEX);
+  Serial.print("\r\n> sending command : AT+MARJ");
+  Serial.println(s);
+  ser.print("AT+MARJ");
+  ser.print(s);
   
   BT_flush(BT, 100);
 }
 
 void BT_setmin(SoftwareSerial &ser, int n)
 {
+  char s[16];
+
+  sprintf(s,"0x%04X",n);
+  
   Serial.flush();
-  Serial.print("\r\n> sending command : AT+MINO0x");
-  Serial.println(n, HEX);
-  ser.print("AT+MINO0x");
-  ser.print(n, HEX);
+  Serial.print("\r\n> sending command : AT+MINO");
+  Serial.println(s);
+  ser.print("AT+MINO");
+  ser.print(s);
   
   BT_flush(BT, 100);
 }
@@ -267,8 +275,8 @@ void BT_randomizeparam(SoftwareSerial &ser)
   
   BT_initBT(ser);
 
-  BT_setmaj(ser, random(4096, 30000));
-  BT_setmin(ser, random(4096, 30000));
+  BT_setmaj(ser, random(0, 0xfffe));
+  BT_setmin(ser, random(0, 0xfffe));
   BT_setIBeaUUID (ser,
                   uuid[random(0,6)],
                   uuid[random(0,6)],
@@ -302,8 +310,8 @@ void setup()
   BT_initBT(BT);
 
   BT_setname(BT, "handiko");
-  BT_setmaj(BT, 12345);
-  BT_setmin(BT, 23456);
+  BT_setmaj(BT, 1122);
+  BT_setmin(BT, 3344);
   BT_setIBeaUUID (BT,
                   "74278BDA",
                   "12345678",
