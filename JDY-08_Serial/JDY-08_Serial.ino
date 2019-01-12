@@ -7,6 +7,18 @@
 AltSoftSerial btSerial;
 char c = ' ';
 bool NL = true;
+
+void serReadBack(AltSoftSerial &serial);
+
+void serReadBack(AltSoftSerial &serial)
+{
+  char s;
+  if (serial.available())
+  {
+    s = serial.read();
+    Serial.write(s);
+  }
+}
  
 void setup() 
 {
@@ -22,11 +34,13 @@ void setup()
  
 void loop()
 {
-    if (btSerial.available())
+    /*if (btSerial.available())
     {
         c = btSerial.read();
         Serial.write(c);
-    }
+    }*/
+
+    serReadBack(btSerial);
  
  
     if (Serial.available())
