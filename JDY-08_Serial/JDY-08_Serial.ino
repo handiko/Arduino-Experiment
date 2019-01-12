@@ -6,8 +6,13 @@
 
 SoftwareSerial BT(8,9);
 
+void BT_sendcmd(SoftwareSerial &ser, char* s);
 char BT_readback(SoftwareSerial &ser);
 
+void BT_sendcmd(SoftwareSerial &ser, char* s)
+{
+  ser.print(s);
+}
 char BT_readback(SoftwareSerial &ser)
 {
   char s;
@@ -16,7 +21,6 @@ char BT_readback(SoftwareSerial &ser)
     s = ser.read();
     Serial.print(s);
   }
-
   return s;
 }
  
