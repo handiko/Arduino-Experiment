@@ -257,27 +257,22 @@ void BT_setIBea(SoftwareSerial &ser, bool c)
 
 void BT_randomizeparam(SoftwareSerial &ser)
 {
-  char uuid[6][9] = {
-    "12345678",
-    "36452973",
-    "0D4E2B7A",
-    "48DE2AC2",
-    "17E63DA2",
-    "03F8021A"
-  };
+  char uuid[4][9];
+
+  sprintf(uuid[0],"%04lX%04lX",random(0xffff),random(0xfffe));
+  sprintf(uuid[1],"%04lX%04lX",random(0xffff),random(0xfffe));
+  sprintf(uuid[2],"%04lX%04lX",random(0xffff),random(0xfffe));
+  sprintf(uuid[3],"%04lX%04lX",random(0xffff),random(0xfffe));
   
   Serial.println("\r\n");
   Serial.println("\r\n.................. Randomizing parameters .................. \r\n");
   
   BT_initBT(ser);
 
-  BT_setmaj(ser, random(0, 0xfffe));
-  BT_setmin(ser, random(0, 0xfffe));
-  BT_setIBeaUUID (ser,
-                  uuid[random(0,6)],
-                  uuid[random(0,6)],
-                  uuid[random(0,6)],
-                  uuid[random(0,6)]);
+  BT_setmaj(ser, random(0xfffe));
+  BT_setmin(ser, random(0xfffe));
+  BT_setIBeaUUID(ser, uuid[0], uuid[1], uuid[2], uuid[3]);
+  BT_setadvint(BT, random(9));
   BT_setIBea(ser, true);         
   BT_reset(ser);
 
@@ -300,11 +295,9 @@ void setup()
   Serial.println("\r\n.................. Initializing parameters .................. \r\n");
   
   BT_initBT(BT);
-  
   BT_reset(BT);
   
   BT_initBT(BT);
-
   BT_setname(BT, "handiko");
   BT_setmaj(BT, 1122);
   BT_setmin(BT, 3344);
@@ -324,6 +317,8 @@ void setup()
 
   Serial.println("\r\n");
   Serial.println("\r\n.......................... Stanby .......................... \r\n");
+
+  randomSeed(analogRead(0));
 }
  
 void loop()
