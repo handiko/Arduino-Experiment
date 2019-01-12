@@ -197,9 +197,72 @@ void BT_setadvIBea(SoftwareSerial &ser)
 }
 
 void BT_setadvint(SoftwareSerial &ser, char n)
+{
+  if(n > 9)
+    n = 9;
+
+  else if(n < 0)
+    n = 0;
+
+  Serial.flush();
+  Serial.print("\r\n> sending command : AT+ADVI");
+  Serial.println(n);
+  ser.print("AT+ADVI");
+  ser.print(n);
+  
+  BT_readback(ser);
+  BT_readback(ser);
+  delay(100);
+  BT_readback(ser);
+}
+
 void BT_setpower(SoftwareSerial &ser, char n)
+{
+  if(n > 3)
+    n = 3;
+
+  else if(n < 0)
+    n = 0;
+
+  Serial.flush();
+  Serial.print("\r\n> sending command : AT+POWE");
+  Serial.println(n);
+  ser.print("AT+POWE");
+  ser.print(n);
+  
+  BT_readback(ser);
+  BT_readback(ser);
+  delay(100);
+  BT_readback(ser);
+}
+
 void BT_setpwrm(SoftwareSerial &ser, bool c)
+{
+  Serial.flush();
+  Serial.print("\r\n> sending command : AT+PWRM");
+  Serial.println(c);
+  ser.print("AT+PWRM");
+  ser.print(c);
+  
+  BT_readback(ser);
+  BT_readback(ser);
+  delay(100);
+  BT_readback(ser);
+}
+
 void BT_setIBea(SoftwareSerial &ser, bool c)
+{
+  Serial.flush();
+  Serial.print("\r\n> sending command : AT+IBEA");
+  Serial.println(c);
+  ser.print("AT+IBEA");
+  ser.print(c);
+  
+  BT_readback(ser);
+  BT_readback(ser);
+  delay(100);
+  BT_readback(ser);
+}
  
 void setup() 
 {
