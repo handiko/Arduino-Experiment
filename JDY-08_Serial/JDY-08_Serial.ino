@@ -270,10 +270,6 @@ void BT_randomizeparam(SoftwareSerial &ser)
   Serial.println("\r\n.................. Randomizing parameters .................. \r\n");
   
   BT_initBT(ser);
-  
-  BT_reset(ser);
-  
-  BT_initBT(ser);
 
   BT_setmaj(ser, random(0, 0xfffe));
   BT_setmin(ser, random(0, 0xfffe));
@@ -286,7 +282,7 @@ void BT_randomizeparam(SoftwareSerial &ser)
   BT_reset(ser);
 
   Serial.println("\r\n");
-  Serial.println("\r\n.................. Stanby .................. \r\n");
+  Serial.println("\r\n.......................... Stanby .......................... \r\n");
 }
  
 void setup() 
@@ -327,7 +323,7 @@ void setup()
   ms = millis();
 
   Serial.println("\r\n");
-  Serial.println("\r\n.................. Stanby .................. \r\n");
+  Serial.println("\r\n.......................... Stanby .......................... \r\n");
 }
  
 void loop()
