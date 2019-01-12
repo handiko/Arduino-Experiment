@@ -2,15 +2,13 @@
  * 
  */
  
-#include <AltSoftSerial.h>
+#include <SoftwareSerial.h>
 
-AltSoftSerial btSerial;
-char c = ' ';
-bool NL = true;
+SoftwareSerial BT(8,9);
 
-char serReadBack(AltSoftSerial &ser);
+char BT_readback(SoftwareSerial &ser);
 
-char serReadBack(AltSoftSerial &ser)
+char BT_readback(SoftwareSerial &ser);
 {
   char s;
   if (ser.available() > 0)
@@ -29,50 +27,14 @@ void setup()
     Serial.print("Uploaded: ");   Serial.println(__DATE__);
     Serial.println(" ");
  
-    btSerial.begin(9600);  
+    BT.begin(9600);  
     Serial.print("BTserial started at ");
     Serial.println(9600);
 
-    delay(1000);
-    btSerial.print("AT");
-    Serial.println(' ');
-    serReadBack(btSerial);
-    delay(500);
-    btSerial.print("AT");
-    Serial.println(' ');
-    serReadBack(btSerial);
+    
 }
  
 void loop()
 {
-    /*if (btSerial.available())
-    {
-        c = btSerial.read();
-        Serial.write(c);
-    }*/
-
-    serReadBack(btSerial);
- 
- 
-    if (Serial.available())
-    {
-        c = Serial.read();
- 
-        if ((c!=10) & (c!=13)) 
-        {  
-             btSerial.write(c);
-        }
- 
-        if (NL)
-        {
-          Serial.print("\r\n>");  
-          NL = false; 
-        }
-        
-        Serial.write(c);
-        if (c==10) 
-        { 
-          NL = true; 
-        }
-    }
+   
 }
