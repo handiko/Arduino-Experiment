@@ -8,7 +8,7 @@ SoftwareSerial BT(8,9);
 
 char BT_readback(SoftwareSerial &ser);
 
-char BT_readback(SoftwareSerial &ser);
+char BT_readback(SoftwareSerial &ser)
 {
   char s;
   if (ser.available() > 0)
