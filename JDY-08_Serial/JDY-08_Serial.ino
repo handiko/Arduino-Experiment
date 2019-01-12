@@ -237,6 +237,8 @@ void BT_setIBea(SoftwareSerial &ser, bool c)
 
 void BT_randomizeparam(SoftwareSerial &ser)
 {
+  Serial.println("\r\n.................. Randomizing parameters .................. \r\n");
+  
   BT_initBT(ser);
   
   BT_reset(ser);
@@ -244,8 +246,8 @@ void BT_randomizeparam(SoftwareSerial &ser)
   BT_initBT(ser);
 
   //BT_setname(ser, "handiko");
-  BT_setmaj(ser, random(0,65530));
-  BT_setmin(ser, random(0,65530));
+  BT_setmaj(ser, random(4096, 30000));
+  BT_setmin(ser, random(4096, 30000));
   BT_setIBeaUUID (ser,
                   "74278BDA",
                   "12345678",
