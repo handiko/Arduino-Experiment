@@ -33,7 +33,10 @@ void BT_setIBea(SoftwareSerial &ser, bool c);
 
 void BT_flush(SoftwareSerial &ser, int interval)
 {
-  
+  BT_readback(ser);
+  BT_readback(ser);
+  delay(interval);
+  BT_readback(ser);
 }
 
 void BT_sendcmd(SoftwareSerial &ser, String s)
@@ -64,10 +67,7 @@ void BT_initBT(SoftwareSerial &ser)
     delay(100);
   }
 
-  BT_readback(ser);
-  BT_readback(ser);
-  delay(100);
-  BT_readback(ser);
+  BT_flush(BT, 100);
 }
 
 void BT_reset(SoftwareSerial &ser)
@@ -76,10 +76,7 @@ void BT_reset(SoftwareSerial &ser)
   Serial.print("\r\n> sending command : AT+RESET \r\n");
   ser.print("AT+RESET");
   
-  BT_readback(ser);
-  BT_readback(ser);
-  delay(1000);
-  BT_readback(ser);
+  BT_flush(BT, 1000);
 }
 
 void BT_setname(SoftwareSerial &ser, String s)
@@ -90,10 +87,7 @@ void BT_setname(SoftwareSerial &ser, String s)
   ser.print("AT+NAME");
   ser.print(s);
   
-  BT_readback(ser);
-  BT_readback(ser);
-  delay(100);
-  BT_readback(ser);
+  BT_flush(BT, 100);
 }
 
 void BT_setmaj(SoftwareSerial &ser, int n)
@@ -104,10 +98,7 @@ void BT_setmaj(SoftwareSerial &ser, int n)
   ser.print("AT+MARJ0x");
   ser.print(n, HEX);
   
-  BT_readback(ser);
-  BT_readback(ser);
-  delay(100);
-  BT_readback(ser);
+  BT_flush(BT, 100);
 }
 
 void BT_setmin(SoftwareSerial &ser, int n)
@@ -118,10 +109,7 @@ void BT_setmin(SoftwareSerial &ser, int n)
   ser.print("AT+MINO0x");
   ser.print(n, HEX);
   
-  BT_readback(ser);
-  BT_readback(ser);
-  delay(100);
-  BT_readback(ser);
+  BT_flush(BT, 100);
 }
 
 void BT_setibe0(SoftwareSerial &ser, String s)
@@ -132,10 +120,7 @@ void BT_setibe0(SoftwareSerial &ser, String s)
   ser.print("AT+IBE0");
   ser.print(s);
   
-  BT_readback(ser);
-  BT_readback(ser);
-  delay(100);
-  BT_readback(ser);
+  BT_flush(BT, 100);
 }
 
 void BT_setibe1(SoftwareSerial &ser, String s)
@@ -146,10 +131,7 @@ void BT_setibe1(SoftwareSerial &ser, String s)
   ser.print("AT+IBE1");
   ser.print(s);
   
-  BT_readback(ser);
-  BT_readback(ser);
-  delay(100);
-  BT_readback(ser);
+  BT_flush(BT, 100);
 }
 
 void BT_setibe2(SoftwareSerial &ser, String s)
@@ -160,10 +142,7 @@ void BT_setibe2(SoftwareSerial &ser, String s)
   ser.print("AT+IBE2");
   ser.print(s);
   
-  BT_readback(ser);
-  BT_readback(ser);
-  delay(100);
-  BT_readback(ser);
+  BT_flush(BT, 100);
 }
 
 void BT_setibe3(SoftwareSerial &ser, String s)
@@ -174,10 +153,7 @@ void BT_setibe3(SoftwareSerial &ser, String s)
   ser.print("AT+IBE3");
   ser.print(s);
   
-  BT_readback(ser);
-  BT_readback(ser);
-  delay(100);
-  BT_readback(ser);
+  BT_flush(BT, 100);
 }
 
 void BT_setIBeaUUID(SoftwareSerial &ser, String s0, String s1, String s2, String s3)
@@ -196,10 +172,7 @@ void BT_setadvIBea(SoftwareSerial &ser)
   ser.print("AT+ADTY");
   ser.print(3);
   
-  BT_readback(ser);
-  BT_readback(ser);
-  delay(100);
-  BT_readback(ser);
+  BT_flush(BT, 100);
 }
 
 void BT_setadvint(SoftwareSerial &ser, int n)
@@ -216,10 +189,7 @@ void BT_setadvint(SoftwareSerial &ser, int n)
   ser.print("AT+ADVI");
   ser.print(n);
   
-  BT_readback(ser);
-  BT_readback(ser);
-  delay(100);
-  BT_readback(ser);
+  BT_flush(BT, 100);
 }
 
 void BT_setpower(SoftwareSerial &ser, int n)
@@ -236,10 +206,7 @@ void BT_setpower(SoftwareSerial &ser, int n)
   ser.print("AT+POWE");
   ser.print(n);
   
-  BT_readback(ser);
-  BT_readback(ser);
-  delay(100);
-  BT_readback(ser);
+  BT_flush(BT, 100);
 }
 
 void BT_setpwrm(SoftwareSerial &ser, bool c)
@@ -250,10 +217,7 @@ void BT_setpwrm(SoftwareSerial &ser, bool c)
   ser.print("AT+PWRM");
   ser.print(c);
   
-  BT_readback(ser);
-  BT_readback(ser);
-  delay(100);
-  BT_readback(ser);
+  BT_flush(BT, 100);
 }
 
 void BT_setIBea(SoftwareSerial &ser, bool c)
@@ -264,10 +228,7 @@ void BT_setIBea(SoftwareSerial &ser, bool c)
   ser.print("AT+IBEA");
   ser.print(c);
   
-  BT_readback(ser);
-  BT_readback(ser);
-  delay(100);
-  BT_readback(ser);
+  BT_flush(BT, 100);
 }
  
 void setup() 
