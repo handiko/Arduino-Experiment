@@ -77,7 +77,7 @@ void BT_initBT(SoftwareSerial &ser)
   Serial.flush();
   Serial.print("\r\n> sending command : AT \r\n");
   
-  for(char i=0;i<5;i++)
+  for(char i=0;i<2;i++)
   {
     ser.print("AT");
     delay(100);
@@ -291,6 +291,9 @@ void setup()
   BT.begin(9600);
   Serial.print("BTserial started at ");
   Serial.println(9600);
+
+  Serial.println("\r\n");
+  Serial.println("\r\n.................. Initializing parameters .................. \r\n");
   
   BT_initBT(BT);
   
@@ -314,6 +317,9 @@ void setup()
   BT_reset(BT);
 
   ms = millis();
+
+  Serial.println("\r\n");
+  Serial.println("\r\n.................. Stanby .................. \r\n");
 }
  
 void loop()
