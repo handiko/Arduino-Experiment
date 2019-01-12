@@ -31,6 +31,10 @@ void BT_setpower(SoftwareSerial &ser, int n);
 void BT_setpwrm(SoftwareSerial &ser, bool c);
 void BT_setIBea(SoftwareSerial &ser, bool c);
 
+void BT_randomizeparam(SoftwareSerial &ser);
+
+unsigned long ms=0;
+
 void BT_flush(SoftwareSerial &ser, int interval)
 {
   BT_readback(ser);
@@ -230,6 +234,30 @@ void BT_setIBea(SoftwareSerial &ser, bool c)
   
   BT_flush(BT, 100);
 }
+
+void BT_randomizeparam(SoftwareSerial &ser)
+{
+  BT_initBT(ser);
+  
+  BT_reset(ser);
+  
+  BT_initBT(ser);
+
+  //BT_setname(ser, "handiko");
+  BT_setmaj(ser, random(0,65530));
+  BT_setmin(ser, random(0,65530));
+  BT_setIBeaUUID (ser,
+                  "74278BDA",
+                  "12345678",
+                  "01AB23CD",
+                  "0A1B2C3D");
+  //BT_setadvIBea(ser);
+  //BT_setadvint(ser, 5);
+  //BT_setpower(ser, 2);
+  //BT_setpwrm(ser, true);
+  BT_setIBea(ser, true);         
+  BT_reset(ser);
+}
  
 void setup() 
 {
@@ -262,9 +290,21 @@ void setup()
   BT_setpwrm(BT, true);
   BT_setIBea(BT, true);         
   BT_reset(BT);
+
+  ms = millis();
 }
  
 void loop()
 {
   BT_readback(BT);
+
+  if((millis() - ms) > 10000)
+  {
+    BT_randomizeparam(BT);
+    ms = millis();
+  }
+  else if((millis() - ms) < 0)
+  {
+    ms = millis();
+  }
 }
