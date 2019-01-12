@@ -42,6 +42,13 @@ void BT_initBT(SoftwareSerial &ser)
   }
 }
 
+void BT_reset(SoftwareSerial &ser)
+{
+  Serial.print("\r\n> sending command : AT+RESET");
+  ser.print("AT+RESET");
+  BT_readback(ser);
+}
+
 void BT_setname(SoftwareSerial &ser, String s)
 {
   Serial.print("\r\n> sending command : AT+NAME");
@@ -65,8 +72,8 @@ void setup()
   BT_initBT(BT);
   BT_readback(BT);
 
+  BT_reset(BT);
   BT_setname(BT, "handiko");
-  BT_readback(BT);
 }
  
 void loop()
