@@ -9,6 +9,7 @@
 
 SoftwareSerial BT(8,9);
 
+void BT_flush(SoftwareSerial &ser, int interval);
 void BT_sendcmd(SoftwareSerial &ser, String s);
 void BT_readback(SoftwareSerial &ser);
 
@@ -25,10 +26,15 @@ void BT_setibe2(SoftwareSerial &ser, String s);
 void BT_setibe3(SoftwareSerial &ser, String s);
 void BT_setIBeaUUID(SoftwareSerial &ser, String s0, String s1, String s2, String s3);
 void BT_setadvIBea(SoftwareSerial &ser);
-void BT_setadvint(SoftwareSerial &ser, char n);
-void BT_setpower(SoftwareSerial &ser, char n);
+void BT_setadvint(SoftwareSerial &ser, int n);
+void BT_setpower(SoftwareSerial &ser, int n);
 void BT_setpwrm(SoftwareSerial &ser, bool c);
 void BT_setIBea(SoftwareSerial &ser, bool c);
+
+void BT_flush(SoftwareSerial &ser, int interval)
+{
+  
+}
 
 void BT_sendcmd(SoftwareSerial &ser, String s)
 {
@@ -196,14 +202,14 @@ void BT_setadvIBea(SoftwareSerial &ser)
   BT_readback(ser);
 }
 
-void BT_setadvint(SoftwareSerial &ser, char n)
+void BT_setadvint(SoftwareSerial &ser, int n)
 {
   if(n > 9)
     n = 9;
 
   else if(n < 0)
     n = 0;
-
+    
   Serial.flush();
   Serial.print("\r\n> sending command : AT+ADVI");
   Serial.println(n);
@@ -216,7 +222,7 @@ void BT_setadvint(SoftwareSerial &ser, char n)
   BT_readback(ser);
 }
 
-void BT_setpower(SoftwareSerial &ser, char n)
+void BT_setpower(SoftwareSerial &ser, int n)
 {
   if(n > 3)
     n = 3;
@@ -289,7 +295,11 @@ void setup()
                   "12345678",
                   "01AB23CD",
                   "0A1B2C3D");
-                  
+  BT_setadvIBea(BT);
+  BT_setadvint(BT, 5);
+  BT_setpower(BT, 2);
+  BT_setpwrm(BT, true);
+  BT_setIBea(BT, true);         
   BT_reset(BT);
 }
  
