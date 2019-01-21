@@ -24,6 +24,8 @@ char* parse_rmc_time(char gps_str[]);
 char parse_rmc_valid(char gps_str[]);
 char* parse_rmc_lat(char gps_str[]);
 char parse_rmc_NS(char gps_str[]);
+char* parse_rmc_lon(char gps_str[]);
+char parse_rmc_EW(char gps_str[]);
 
 char* parse_rmc_time(char gps_str[])
 {
@@ -102,11 +104,6 @@ char* parse_rmc_lat(char gps_str[])
     lintang[j] = 0;
   }
 
-  for(i=0;i<20;i++)
-  {
-    lintang[i] = '\0';
-  }
-
   for(i=0;i<3;i++)
   {
     while(gps_str[c] != ',')
@@ -160,6 +157,73 @@ char parse_rmc_NS(char gps_str[])
   return ns;
 }
 
+char* parse_rmc_lon(char gps_str[])
+{
+  char bujur[20];
+  char *result;
+  int c=0;
+  int i=0;
+
+  char buff[50];
+
+  for(int j=0;j<20;j++)
+  {
+    bujur[j] = 0;
+  }
+
+  for(i=0;i<5;i++)
+  {
+    while(gps_str[c] != ',')
+    {
+      c++;
+    }
+
+    c++;
+  }
+
+  i=0;
+
+  while(gps_str[c] != ',')
+  {
+    bujur[i] = gps_str[c];
+    c++;
+    i++;
+  }
+
+  result = bujur;
+
+  sprintf(buff, " Longitude: %s", bujur);
+  Serial.println(buff);
+  
+  return result;
+}
+
+char parse_rmc_EW(char gps_str[])
+{
+  char ew=0;
+  int c=0;
+  int i=0;
+
+  char buff[50];
+
+  for(i=0;i<6;i++)
+  {
+    while(gps_str[c] != ',')
+    {
+      c++;
+    }
+
+    c++;
+  }
+
+  ew = gps_str[c];
+
+  sprintf(buff, " E/W: %c", ew);
+  Serial.println(buff);
+
+  return ew;
+}
+
 int gps_parse(SoftwareSerial &ser)
 {
   char rmc[150];
@@ -211,6 +275,8 @@ int gps_parse(SoftwareSerial &ser)
   parse_rmc_valid(rmc);
   parse_rmc_lat(rmc);
   parse_rmc_NS(rmc);
+  parse_rmc_lon(rmc);
+  parse_rmc_EW(rmc);
 
   Serial.println(' ');
   
