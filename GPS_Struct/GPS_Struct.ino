@@ -39,7 +39,14 @@ char* parse_rmc_time(char gps_str[])
   char waktu[20];
   char *result;
   int c=0;
-  int i;
+  int i=0;
+
+  for(i=0;i<20;i++)
+  {
+    waktu[i] = '\0';
+  }
+
+  i=0;
 
   for(;c<150;c++)
   {
@@ -88,6 +95,11 @@ char* parse_rmc_lat(char gps_str[])
   char *result;
   int c=0;
   int i=0;
+
+  for(i=0;i<20;i++)
+  {
+    lintang[i] = '\0';
+  }
 
   for(i=0;i<3;i++)
   {
@@ -231,10 +243,10 @@ int gps_parse(SoftwareSerial &ser)
   Serial.println(rmc);
   Serial.print(" GPS TIME: ");                  Serial.println(parse_rmc_time(rmc));
   Serial.print(" GPS fix (A=true, V=false): "); Serial.println(parse_rmc_valid(rmc));
-  Serial.print(" Latitude: ");                  Serial.println(parse_rmc_lat(rmc));
-  Serial.print(" N/S: ");                       Serial.println(parse_rmc_NS(rmc));
-  Serial.print(" Longitude: ");                 Serial.println(parse_rmc_lon(rmc));
-  Serial.print(" E/W: ");                       Serial.println(parse_rmc_EW(rmc));
+  //Serial.print(" Latitude: ");                  Serial.println(parse_rmc_lat(rmc));
+  //Serial.print(" N/S: ");                       Serial.println(parse_rmc_NS(rmc));
+  //Serial.print(" Longitude: ");                 Serial.println(parse_rmc_lon(rmc));
+  //Serial.print(" E/W: ");                       Serial.println(parse_rmc_EW(rmc));
 
   Serial.println(' ');
   
