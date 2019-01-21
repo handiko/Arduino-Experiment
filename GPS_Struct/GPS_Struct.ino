@@ -34,8 +34,10 @@ struct GPS
   char check[5];
 };
 
-int parse_rmc_time(char gps_str[])
+char* parse_rmc_time(char gps_str[])
 {
+  char waktu[20];
+  char *result;
   int c=0;
   int i;
 
@@ -52,15 +54,17 @@ int parse_rmc_time(char gps_str[])
 
   while(gps_str[c] != ',')
   {
-    GPS.time_fix[i] = gps_str[c];
+    waktu[i] = gps_str[c];
     c++;
     i++;
   }
 
   Serial.print(" nilai i: ");
   Serial.println(i);
+
+  result = waktu;
   
-  return i;
+  return result;
 }
 
 int gps_parse(SoftwareSerial &ser)
@@ -106,7 +110,7 @@ int gps_parse(SoftwareSerial &ser)
   c--;
 
   Serial.println(rmc);
-  parse_rmc_time(rmc);
+  Serial.println(parse_rmc_time(rmc));
   
   return c;
 
