@@ -23,6 +23,7 @@ int gps_parse(SoftwareSerial &ser);
 char* parse_rmc_time(char gps_str[]);
 char parse_rmc_valid(char gps_str[]);
 char* parse_rmc_lat(char gps_str[]);
+char parse_rmc_NS(char gps_str[]);
 
 char* parse_rmc_time(char gps_str[])
 {
@@ -135,9 +136,11 @@ char* parse_rmc_lat(char gps_str[])
 
 char parse_rmc_NS(char gps_str[])
 {
-  char ns;
+  char ns=0;
   int c=0;
   int i=0;
+
+  char buff[50];
 
   for(i=0;i<4;i++)
   {
@@ -150,6 +153,9 @@ char parse_rmc_NS(char gps_str[])
   }
 
   ns = gps_str[c];
+
+  sprintf(buff, " N/S: %c", ns);
+  Serial.println(buff);
 
   return ns;
 }
@@ -204,7 +210,7 @@ int gps_parse(SoftwareSerial &ser)
   parse_rmc_time(rmc);
   parse_rmc_valid(rmc);
   parse_rmc_lat(rmc);
-  
+  parse_rmc_NS(rmc);
 
   Serial.println(' ');
   
