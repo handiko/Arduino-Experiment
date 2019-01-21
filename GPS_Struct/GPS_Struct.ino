@@ -134,6 +134,58 @@ char parse_rmc_NS(char gps_str[])
   return ns;
 }
 
+char* parse_rmc_lon(char gps_str[])
+{
+  char bujur[20];
+  char *result;
+  int c=0;
+  int i=0;
+
+  for(i=0;i<5;i++)
+  {
+    while(gps_str[c] != ',')
+    {
+      c++;
+    }
+
+    c++;
+  }
+
+  i=0;
+
+  while(gps_str[c] != ',')
+  {
+    bujur[i] = gps_str[c];
+    c++;
+    i++;
+  }
+
+  result = bujur;
+  
+  return result;
+}
+
+char parse_rmc_EW(char gps_str[])
+{
+  char ew;
+  int c=0;
+  int i=0;
+
+  for(i=0;i<6;i++)
+  {
+    while(gps_str[c] != ',')
+    {
+      c++;
+    }
+
+    c++;
+  }
+
+  ew = gps_str[c];
+
+  return ew;
+}
+
 int gps_parse(SoftwareSerial &ser)
 {
   char rmc[150];
@@ -181,6 +233,8 @@ int gps_parse(SoftwareSerial &ser)
   Serial.print(" GPS fix (A=true, V=false): "); Serial.println(parse_rmc_valid(rmc));
   Serial.print(" Latitude: ");                  Serial.println(parse_rmc_lat(rmc));
   Serial.print(" N/S: ");                       Serial.println(parse_rmc_NS(rmc));
+  Serial.print(" Longitude: ");                 Serial.println(parse_rmc_lon(rmc));
+  Serial.print(" E/W: ");                       Serial.println(parse_rmc_EW(rmc));
 
   Serial.println(' ');
   
