@@ -18,35 +18,12 @@
 
 SoftwareSerial gps = SoftwareSerial(8, 9);
 
-struct GPS 
-{
-  char time_fix[10];
-  char valid;
-  char lati[12];
-  char NS;
-  char lon[12];
-  char EW;
-  char spd[10];
-  char cse[10];
-  char date_fix[10];
-  char magnetic[10];
-  char mag_EW;
-  char check[5];
-};
-
 char* parse_rmc_time(char gps_str[])
 {
   char waktu[20];
   char *result;
   int c=0;
   int i=0;
-
-  for(i=0;i<20;i++)
-  {
-    waktu[i] = '\0';
-  }
-
-  i=0;
 
   for(;c<150;c++)
   {
@@ -241,8 +218,13 @@ int gps_parse(SoftwareSerial &ser)
   c--;
 
   Serial.println(rmc);
-  Serial.print(" GPS TIME: ");                  Serial.println(parse_rmc_time(rmc));
-  Serial.print(" GPS fix (A=true, V=false): "); Serial.println(parse_rmc_valid(rmc));
+  
+  Serial.print(" GPS TIME: ");                  
+  Serial.println(parse_rmc_time(rmc));
+  
+  Serial.print(" GPS fix (A=true, V=false): "); 
+  Serial.println(parse_rmc_valid(rmc));
+  
   //Serial.print(" Latitude: ");                  Serial.println(parse_rmc_lat(rmc));
   //Serial.print(" N/S: ");                       Serial.println(parse_rmc_NS(rmc));
   //Serial.print(" Longitude: ");                 Serial.println(parse_rmc_lon(rmc));
