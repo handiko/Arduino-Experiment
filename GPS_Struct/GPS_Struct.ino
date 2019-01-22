@@ -72,6 +72,8 @@ char* parse_rmc_time(char gps_str[])
   }
 
   result = waktu;
+
+  Serial.print('.');
   
   return result;
 }
@@ -93,6 +95,8 @@ char parse_rmc_valid(char gps_str[])
   }
 
   validity = gps_str[c];
+
+  Serial.print('.');
 
   return validity;
 }
@@ -129,6 +133,8 @@ char* parse_rmc_lat(char gps_str[])
   }
 
   result = lintang;
+
+  Serial.print('.');
   
   return result;
 }
@@ -151,6 +157,8 @@ char parse_rmc_NS(char gps_str[])
 
   if(gps_str[c]!=',')
     ns = gps_str[c];
+
+  Serial.print('.');
 
   return ns;
 }
@@ -187,6 +195,8 @@ char* parse_rmc_lon(char gps_str[])
   }
 
   result = bujur;
+
+  Serial.print('.');
   
   return result;
 }
@@ -209,6 +219,8 @@ char parse_rmc_EW(char gps_str[])
 
   if(gps_str[c]!=',')
     ew = gps_str[c];
+
+  Serial.print('.');
 
   return ew;
 }
@@ -408,7 +420,12 @@ void loop()
 
   if(GPS.gps_success)
   {    
-    sprintf(buff, "GPS Time: %s", GPS.gps_rmc);
+    sprintf(buff, "\n GPS Time: %s", GPS.gps_time);
+    sprintf(buff, "%s \n GPS Valid: %c", buff, GPS.gps_valid);
+    sprintf(buff, "%s \n GPS Latitude: %s", buff, GPS.gps_lat);
+    sprintf(buff, "%s \n GPS N/S: %c", buff, GPS.gps_ns);
+    sprintf(buff, "%s \n GPS Longitude: %s", buff, GPS.gps_lon);
+    sprintf(buff, "%s \n GPS E/W: %c", buff, GPS.gps_ew);
     
     Serial.println(buff);
   }
