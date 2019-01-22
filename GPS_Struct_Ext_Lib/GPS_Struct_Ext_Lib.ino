@@ -15,11 +15,9 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include <SoftwareSerial.h>
-#include "mygps.h"
+#include <MyGPS.h>
 
 SoftwareSerial gps = SoftwareSerial(8, 9);
-
-GPS_results GPS;
 
 void setup()
 {
@@ -39,7 +37,7 @@ void loop()
 {
   char buff[250];
   
-  GPS = gps_parse(gps);
+  GPSresults GPS = gps_parse(gps);
 
   if(GPS.gps_success)
   {    

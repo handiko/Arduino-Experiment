@@ -1,7 +1,7 @@
-#ifndef mygps_h
-#define mygps_h
+#ifndef MyGPS_h
+#define MyGPS_h
 
-struct GPS_results {
+struct GPSresults {
   char gps_success;
   char gps_rmc[150];
   char gps_time[10];
@@ -15,7 +15,7 @@ struct GPS_results {
   char gps_date[10];
 }; 
 
-struct GPS_results gps_parse(SoftwareSerial &ser);
+struct GPSresults gps_parse(SoftwareSerial &ser);
 
 char* parse_rmc_time(char gps_str[]);
 char parse_rmc_valid(char gps_str[]);
@@ -322,13 +322,13 @@ char* parse_rmc_date(char gps_str[])
   return result;
 }
 
-struct GPS_results gps_parse(SoftwareSerial &ser)
+struct GPSresults gps_parse(SoftwareSerial &ser)
 {
   char rmc[150];
   char temp;
   int c=0;
 
-  GPS_results result;
+  GPSresults result;
 
   for(int i=0;i<150;i++)
     rmc[i]='\0';
