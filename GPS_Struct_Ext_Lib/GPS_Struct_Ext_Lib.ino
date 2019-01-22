@@ -19,7 +19,7 @@
 
 SoftwareSerial gps = SoftwareSerial(8, 9);
 
-struct GPS_results GPS;
+GPS_results GPS;
 
 void setup()
 {
