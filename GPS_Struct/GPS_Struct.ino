@@ -257,6 +257,8 @@ char* parse_rmc_spd(char gps_str[])
   }
 
   result = spd;
+
+  Serial.print('.');
   
   return result;
 }
@@ -293,6 +295,8 @@ char* parse_rmc_cse(char gps_str[])
   }
 
   result = cse;
+
+  Serial.print('.');
   
   return result;
 }
@@ -329,6 +333,8 @@ char* parse_rmc_date(char gps_str[])
   }
 
   result = gps_date;
+
+  Serial.print('.');
   
   return result;
 }
@@ -420,12 +426,17 @@ void loop()
 
   if(GPS.gps_success)
   {    
-    sprintf(buff, "\n GPS Time: %s", GPS.gps_time);
+    sprintf(buff, "\n%s", GPS.gps_rmc);
+    
+    sprintf(buff, "%s \n GPS Time (HHMMSS): %s", buff, GPS.gps_time);
     sprintf(buff, "%s \n GPS Valid: %c", buff, GPS.gps_valid);
     sprintf(buff, "%s \n GPS Latitude: %s", buff, GPS.gps_lat);
     sprintf(buff, "%s \n GPS N/S: %c", buff, GPS.gps_ns);
     sprintf(buff, "%s \n GPS Longitude: %s", buff, GPS.gps_lon);
     sprintf(buff, "%s \n GPS E/W: %c", buff, GPS.gps_ew);
+    sprintf(buff, "%s \n GPS Speed (knots): %s", buff, GPS.gps_spd);
+    sprintf(buff, "%s \n GPS Course (degree): %s", buff, GPS.gps_cse);
+    sprintf(buff, "%s \n GPS Date (DDMMYY): %s \n", buff, GPS.gps_date);
     
     Serial.println(buff);
   }
