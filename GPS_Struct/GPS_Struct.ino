@@ -18,8 +18,9 @@
 
 SoftwareSerial gps = SoftwareSerial(8, 9);
 
-struct Coord {
-  char success;
+struct GPS_results {
+  char gps_success;
+  char gps_rmc[150];
   char gps_time[10];
   char gps_valid;
   char gps_lat[15];
@@ -29,9 +30,9 @@ struct Coord {
   char gps_spd[10];
   char gps_cse[10];
   char gps_date[10];
-};
+} GPS;
 
-struct Coord gps_parse(SoftwareSerial &ser);
+struct GPS_results gps_parse(SoftwareSerial &ser);
 
 char* parse_rmc_time(char gps_str[]);
 char parse_rmc_valid(char gps_str[]);
@@ -50,7 +51,7 @@ char* parse_rmc_time(char gps_str[])
   int c=0;
   int i=0;
 
-  char buff[50];
+  //char buff[50];
 
   for(int j=0;j<10;j++)
   {
@@ -73,9 +74,6 @@ char* parse_rmc_time(char gps_str[])
   }
 
   result = waktu;
-
-  sprintf(buff, " waktu: %s", result);
-  Serial.println(buff);
   
   return result;
 }
@@ -86,7 +84,7 @@ char parse_rmc_valid(char gps_str[])
   int c=0;
   int i=0;
 
-  char buff[50];
+  //char buff[50];
 
   for(i=0;i<2;i++)
   {
@@ -100,9 +98,6 @@ char parse_rmc_valid(char gps_str[])
 
   validity = gps_str[c];
 
-  sprintf(buff, " GPS Fix (A=True, V=False): %c", validity);
-  Serial.println(buff);
-
   return validity;
 }
 
@@ -113,7 +108,7 @@ char* parse_rmc_lat(char gps_str[])
   int c=0;
   int i=0;
 
-  char buff[50];
+  //char buff[50];
 
   for(int j=0;j<20;j++)
   {
@@ -140,9 +135,6 @@ char* parse_rmc_lat(char gps_str[])
   }
 
   result = lintang;
-
-  sprintf(buff, " Latitude: %s", lintang);
-  Serial.println(buff);
   
   return result;
 }
@@ -153,7 +145,7 @@ char parse_rmc_NS(char gps_str[])
   int c=0;
   int i=0;
 
-  char buff[50];
+  //char buff[50];
 
   for(i=0;i<4;i++)
   {
@@ -168,9 +160,6 @@ char parse_rmc_NS(char gps_str[])
   if(gps_str[c]!=',')
     ns = gps_str[c];
 
-  sprintf(buff, " N/S: %c", ns);
-  Serial.println(buff);
-
   return ns;
 }
 
@@ -181,7 +170,7 @@ char* parse_rmc_lon(char gps_str[])
   int c=0;
   int i=0;
 
-  char buff[50];
+  //char buff[50];
 
   for(int j=0;j<20;j++)
   {
@@ -208,9 +197,6 @@ char* parse_rmc_lon(char gps_str[])
   }
 
   result = bujur;
-
-  sprintf(buff, " Longitude: %s", bujur);
-  Serial.println(buff);
   
   return result;
 }
@@ -221,7 +207,7 @@ char parse_rmc_EW(char gps_str[])
   int c=0;
   int i=0;
 
-  char buff[50];
+  //char buff[50];
 
   for(i=0;i<6;i++)
   {
@@ -236,9 +222,6 @@ char parse_rmc_EW(char gps_str[])
   if(gps_str[c]!=',')
     ew = gps_str[c];
 
-  sprintf(buff, " E/W: %c", ew);
-  Serial.println(buff);
-
   return ew;
 }
 
@@ -249,7 +232,7 @@ char* parse_rmc_spd(char gps_str[])
   int c=0;
   int i=0;
 
-  char buff[50];
+  //char buff[50];
 
   for(int j=0;j<10;j++)
   {
@@ -276,9 +259,6 @@ char* parse_rmc_spd(char gps_str[])
   }
 
   result = spd;
-
-  sprintf(buff, " Speed (knots): %s", spd);
-  Serial.println(buff);
   
   return result;
 }
@@ -290,7 +270,7 @@ char* parse_rmc_cse(char gps_str[])
   int c=0;
   int i=0;
 
-  char buff[50];
+  //char buff[50];
 
   for(int j=0;j<10;j++)
   {
@@ -317,9 +297,6 @@ char* parse_rmc_cse(char gps_str[])
   }
 
   result = cse;
-
-  sprintf(buff, " Course (degree): %s", cse);
-  Serial.println(buff);
   
   return result;
 }
@@ -331,7 +308,7 @@ char* parse_rmc_date(char gps_str[])
   int c=0;
   int i=0;
 
-  char buff[50];
+  //char buff[50];
 
   for(int j=0;j<10;j++)
   {
@@ -358,22 +335,19 @@ char* parse_rmc_date(char gps_str[])
   }
 
   result = gps_date;
-
-  sprintf(buff, " Date: %s", gps_date);
-  Serial.println(buff);
   
   return result;
 }
 
-struct Coord gps_parse(SoftwareSerial &ser)
+struct GPS_results gps_parse(SoftwareSerial &ser)
 {
   char rmc[150];
   char temp;
   int c=0;
 
-  char ser_buff[100];
+  //char ser_buff[100];
 
-  Coord result;
+  GPS_results result;
 
   for(int i=0;i<150;i++)
     rmc[i]='\0';
@@ -401,7 +375,7 @@ struct Coord gps_parse(SoftwareSerial &ser)
     {
       if(rmc[5]!='C')
       {
-        result.success = 0;
+        result.gps_success = 0;
         
         return result;
 
@@ -413,9 +387,10 @@ struct Coord gps_parse(SoftwareSerial &ser)
 
   c--;
 
-  sprintf(ser_buff, "%s", rmc);
-  Serial.println(ser_buff);
+  //sprintf(ser_buff, "%s", rmc);
+  //Serial.println(ser_buff);
 
+  strcpy(result.gps_rmc, rmc);
   strcpy(result.gps_time, parse_rmc_time(rmc));
   result.gps_valid = parse_rmc_valid(rmc);
   strcpy(result.gps_lat, parse_rmc_lat(rmc));
@@ -425,22 +400,8 @@ struct Coord gps_parse(SoftwareSerial &ser)
   strcpy(result.gps_spd, parse_rmc_spd(rmc));
   strcpy(result.gps_cse, parse_rmc_cse(rmc));
   strcpy(result.gps_date, parse_rmc_date(rmc));
-
-  Serial.println(' ');
-
-  Serial.println(result.gps_time);
-  Serial.println(result.gps_valid);
-  Serial.println(result.gps_lat);
-  Serial.println(result.gps_ns);
-  Serial.println(result.gps_lon);
-  Serial.println(result.gps_ew);
-  Serial.println(result.gps_spd);
-  Serial.println(result.gps_cse);
-  Serial.println(result.gps_date);
-
-  Serial.println(' ');
   
-  result.success = c;
+  result.gps_success = c;
   
   return result;
 
@@ -464,5 +425,10 @@ void setup()
 
 void loop()
 {
-  gps_parse(gps);
+  GPS = gps_parse(gps);
+
+  if(GPS.gps_success)
+  {
+    Serial.println(GPS.gps_rmc);
+  }
 }
