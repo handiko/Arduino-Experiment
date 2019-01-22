@@ -420,7 +420,7 @@ void setup()
 
 void loop()
 {
-  char buff[300];
+  char buff[250];
   
   GPS = gps_parse(gps);
 
