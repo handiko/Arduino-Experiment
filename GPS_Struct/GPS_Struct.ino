@@ -360,6 +360,18 @@ int gps_parse(SoftwareSerial &ser)
 
   char ser_buff[100];
 
+  struct Gps {
+    char gps_time[10];
+    char gps_valid;
+    char gps_lat[15];
+    char gps_ns;
+    char gps_lon[15];
+    char gps_ew;
+    char gps_spd[10];
+    char gps_cse[10];
+    char gps_date[10];
+  } GPS;
+
   for(int i=0;i<150;i++)
     rmc[i]='\0';
 
@@ -399,15 +411,27 @@ int gps_parse(SoftwareSerial &ser)
   sprintf(ser_buff, "%s", rmc);
   Serial.println(ser_buff);
 
-  parse_rmc_time(rmc);
-  parse_rmc_valid(rmc);
-  parse_rmc_lat(rmc);
-  parse_rmc_NS(rmc);
-  parse_rmc_lon(rmc);
-  parse_rmc_EW(rmc);
-  parse_rmc_spd(rmc);
-  parse_rmc_cse(rmc);
-  parse_rmc_date(rmc);
+  strcpy(GPS.gps_time, parse_rmc_time(rmc));
+  GPS.gps_valid = parse_rmc_valid(rmc);
+  strcpy(GPS.gps_lat, parse_rmc_lat(rmc));
+  GPS.gps_ns = parse_rmc_NS(rmc);
+  strcpy(GPS.gps_lon, parse_rmc_lon(rmc));
+  GPS.gps_ew = parse_rmc_EW(rmc);
+  strcpy(GPS.gps_spd, parse_rmc_spd(rmc));
+  strcpy(GPS.gps_cse, parse_rmc_cse(rmc));
+  strcpy(GPS.gps_date, parse_rmc_date(rmc));
+
+  Serial.println(' ');
+
+  Serial.println(GPS.gps_time);
+  Serial.println(GPS.gps_valid);
+  Serial.println(GPS.gps_lat);
+  Serial.println(GPS.gps_ns);
+  Serial.println(GPS.gps_lon);
+  Serial.println(GPS.gps_ew);
+  Serial.println(GPS.gps_spd);
+  Serial.println(GPS.gps_cse);
+  Serial.println(GPS.gps_date);
 
   Serial.println(' ');
   
