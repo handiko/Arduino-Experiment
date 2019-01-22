@@ -51,8 +51,6 @@ char* parse_rmc_time(char gps_str[])
   int c=0;
   int i=0;
 
-  //char buff[50];
-
   for(int j=0;j<10;j++)
   {
     waktu[j] = 0;
@@ -84,8 +82,6 @@ char parse_rmc_valid(char gps_str[])
   int c=0;
   int i=0;
 
-  //char buff[50];
-
   for(i=0;i<2;i++)
   {
     while(gps_str[c] != ',')
@@ -107,8 +103,6 @@ char* parse_rmc_lat(char gps_str[])
   char *result;
   int c=0;
   int i=0;
-
-  //char buff[50];
 
   for(int j=0;j<20;j++)
   {
@@ -145,8 +139,6 @@ char parse_rmc_NS(char gps_str[])
   int c=0;
   int i=0;
 
-  //char buff[50];
-
   for(i=0;i<4;i++)
   {
     while(gps_str[c] != ',')
@@ -169,8 +161,6 @@ char* parse_rmc_lon(char gps_str[])
   char *result;
   int c=0;
   int i=0;
-
-  //char buff[50];
 
   for(int j=0;j<20;j++)
   {
@@ -207,8 +197,6 @@ char parse_rmc_EW(char gps_str[])
   int c=0;
   int i=0;
 
-  //char buff[50];
-
   for(i=0;i<6;i++)
   {
     while(gps_str[c] != ',')
@@ -231,8 +219,6 @@ char* parse_rmc_spd(char gps_str[])
   char *result;
   int c=0;
   int i=0;
-
-  //char buff[50];
 
   for(int j=0;j<10;j++)
   {
@@ -270,8 +256,6 @@ char* parse_rmc_cse(char gps_str[])
   int c=0;
   int i=0;
 
-  //char buff[50];
-
   for(int j=0;j<10;j++)
   {
     cse[j] = 0;
@@ -308,8 +292,6 @@ char* parse_rmc_date(char gps_str[])
   int c=0;
   int i=0;
 
-  //char buff[50];
-
   for(int j=0;j<10;j++)
   {
     gps_date[j] = 0;
@@ -344,8 +326,6 @@ struct GPS_results gps_parse(SoftwareSerial &ser)
   char rmc[150];
   char temp;
   int c=0;
-
-  //char ser_buff[100];
 
   GPS_results result;
 
@@ -387,9 +367,6 @@ struct GPS_results gps_parse(SoftwareSerial &ser)
 
   c--;
 
-  //sprintf(ser_buff, "%s", rmc);
-  //Serial.println(ser_buff);
-
   strcpy(result.gps_rmc, rmc);
   strcpy(result.gps_time, parse_rmc_time(rmc));
   result.gps_valid = parse_rmc_valid(rmc);
@@ -425,10 +402,14 @@ void setup()
 
 void loop()
 {
+  char buff[300];
+  
   GPS = gps_parse(gps);
 
   if(GPS.gps_success)
-  {
-    Serial.println(GPS.gps_rmc);
+  {    
+    sprintf(buff, "%s", GPS.gps_rmc);
+
+    Serial.println(buff);
   }
 }
