@@ -408,8 +408,8 @@ void loop()
 
   if(GPS.gps_success)
   {    
-    sprintf(buff, "%s", GPS.gps_rmc);
-
+    sprintf(buff, "GPS Time: %s", GPS.gps_rmc);
+    
     Serial.println(buff);
   }
 }
