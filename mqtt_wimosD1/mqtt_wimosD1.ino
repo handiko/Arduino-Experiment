@@ -70,12 +70,24 @@ void callback(char* topic, byte* payload, unsigned int len)
   for(unsigned int i=0; i<len; i++)
   {
     Serial.print((char) payload[i]);
+
+    if(len == 1 && payload[0] == '1')
+    {
+      digitalWrite(LED_BUILTIN, LOW);
+    }
+    else if(len == 1 && payload[0] == '0')
+    {
+      digitalWrite(LED_BUILTIN, HIGH);
+    }
   }
   Serial.println();
 }
 
 void setup()
 {
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
+  
   Serial.begin(115200);
   setupWiFi();
   client.setServer(broker, 1883);
