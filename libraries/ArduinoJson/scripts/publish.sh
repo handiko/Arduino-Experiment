@@ -7,18 +7,26 @@ cd "$(dirname "$0")/.."
 VERSION="$1"
 DATE=$(date +%F)
 TAG="v$VERSION"
+VERSION_REGEX="[0-9a-z\\.\\-]+"
 
 update_version_in_source () {
 	IFS=".-" read MAJOR MINOR REVISION EXTRA < <(echo "$VERSION")
 	UNDERLINE=$(printf -- '-%.0s' $(seq 1 ${#TAG}))
 
+	sed -i~ -bE "s/version=$VERSION_REGEX/version=$VERSION/; s|ardu-badge.com/ArduinoJson/$VERSION_REGEX|ardu-badge.com/ArduinoJson/$VERSION|; " README.md
+	rm README.md*~
+
 	sed -i~ -bE "4s/HEAD/$TAG ($DATE)/; 5s/-+/$UNDERLINE/" CHANGELOG.md
 	rm CHANGELOG.md*~
+
 	sed -i~ -bE "s/\"version\":.*$/\"version\": \"$VERSION\",/" library.json
 	rm library.json*~
 
 	sed -i~ -bE "s/version=.*$/version=$VERSION/" library.properties
 	rm library.properties*~
+
+	sed -i~ -bE "s/version: .*$/version: $VERSION.{build}/" appveyor.yml
+	rm appveyor.yml*~
 
 	sed -i~ -bE \
 		-e "s/ARDUINOJSON_VERSION .*$/ARDUINOJSON_VERSION \"$VERSION\"/" \
@@ -30,7 +38,7 @@ update_version_in_source () {
 }
 
 commit_new_version () {
-	git add src/ArduinoJson/version.hpp CHANGELOG.md library.json library.properties
+	git add src/ArduinoJson/version.hpp README.md CHANGELOG.md library.json library.properties appveyor.yml
 	git commit -m "Set version to $VERSION"
 }
 

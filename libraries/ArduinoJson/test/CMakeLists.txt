@@ -1,5 +1,5 @@
 # ArduinoJson - arduinojson.org
-# Copyright Benoit Blanchon 2014-2018
+# Copyright Benoit Blanchon 2014-2019
 # MIT License
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
@@ -24,7 +24,6 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
 		-Wshadow
 		-Wsign-promo
 		-Wstrict-aliasing
-		-Wstrict-overflow=5
 		-Wundef
 	)
 
@@ -71,6 +70,7 @@ if(MSVC)
 	)
 endif()
 
+add_subdirectory(ElementProxy)
 add_subdirectory(IntegrationTests)
 add_subdirectory(JsonArray)
 add_subdirectory(JsonDeserializer)
@@ -78,10 +78,11 @@ add_subdirectory(JsonDocument)
 add_subdirectory(JsonObject)
 add_subdirectory(JsonSerializer)
 add_subdirectory(JsonVariant)
-add_subdirectory(JsonWriter)
+add_subdirectory(MemberProxy)
 add_subdirectory(MemoryPool)
 add_subdirectory(Misc)
 add_subdirectory(MixedConfiguration)
 add_subdirectory(MsgPackDeserializer)
 add_subdirectory(MsgPackSerializer)
 add_subdirectory(Numbers)
+add_subdirectory(TextFormatter)

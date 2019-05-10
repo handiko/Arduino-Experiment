@@ -1,5 +1,5 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #include <ArduinoJson.h>
@@ -7,7 +7,7 @@
 #include <sstream>
 
 TEST_CASE("deserializeJson(const std::string&)") {
-  DynamicJsonDocument doc;
+  DynamicJsonDocument doc(4096);
 
   SECTION("should accept const string") {
     const std::string input("[42]");
@@ -36,7 +36,7 @@ TEST_CASE("deserializeJson(const std::string&)") {
 }
 
 TEST_CASE("deserializeJson(std::istream&)") {
-  DynamicJsonDocument doc;
+  DynamicJsonDocument doc(4096);
 
   SECTION("array") {
     std::istringstream json(" [ 42 /* comment */ ] ");

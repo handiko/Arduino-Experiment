@@ -1,5 +1,5 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #include <ArduinoJson.h>
@@ -54,10 +54,10 @@ TEST_CASE("Polyfills/type_traits") {
     CHECK(IsVisitable<VariantRef>::value == true);
     CHECK(IsVisitable<VariantConstRef>::value == true);
     CHECK(IsVisitable<ArrayRef>::value == true);
-    CHECK(IsVisitable<ArraySubscript>::value == true);
+    CHECK(IsVisitable<ElementProxy<ArrayRef> >::value == true);
     CHECK(IsVisitable<ArrayConstRef>::value == true);
     CHECK(IsVisitable<ObjectRef>::value == true);
-    CHECK(IsVisitable<ObjectSubscript<const char*> >::value == true);
+    CHECK((IsVisitable<MemberProxy<ObjectRef, const char*> >::value == true));
     CHECK(IsVisitable<ObjectConstRef>::value == true);
     CHECK(IsVisitable<DynamicJsonDocument>::value == true);
     CHECK(IsVisitable<StaticJsonDocument<10> >::value == true);

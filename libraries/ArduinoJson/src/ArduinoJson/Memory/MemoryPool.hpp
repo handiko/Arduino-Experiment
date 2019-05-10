@@ -1,5 +1,5 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #pragma once
@@ -91,7 +91,7 @@ class MemoryPool {
     return reinterpret_cast<T*>(allocRight(sizeof(T)));
   }
 
-  char* allocRight(size_t bytes) {
+  void* allocRight(size_t bytes) {
     if (!canAlloc(bytes)) return 0;
     _right -= bytes;
     return _right;

@@ -1,5 +1,5 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #include <ArduinoJson.h>
@@ -28,7 +28,7 @@ static void check(const JsonObject object, const char (&expected_data)[N]) {
 //}
 
 TEST_CASE("serialize MsgPack object") {
-  DynamicJsonDocument doc;
+  DynamicJsonDocument doc(4096);
   JsonObject object = doc.to<JsonObject>();
 
   SECTION("empty") {

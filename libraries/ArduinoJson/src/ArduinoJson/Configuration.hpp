@@ -1,5 +1,5 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #pragma once
@@ -53,11 +53,6 @@
 #define ARDUINOJSON_DEFAULT_NESTING_LIMIT 10
 #endif
 
-// Default capacity for DynamicJsonDocument
-#ifndef ARDUINOJSON_DEFAULT_POOL_SIZE
-#define ARDUINOJSON_DEFAULT_POOL_SIZE 1024
-#endif
-
 #else  // ARDUINOJSON_EMBEDDED_MODE
 
 // On a computer we have plenty of memory so we can use doubles
@@ -89,35 +84,40 @@
 #define ARDUINOJSON_DEFAULT_NESTING_LIMIT 50
 #endif
 
-// Default capacity for DynamicJsonDocument
-#ifndef ARDUINOJSON_DEFAULT_POOL_SIZE
-#define ARDUINOJSON_DEFAULT_POOL_SIZE 16384
-#endif
-
 #endif  // ARDUINOJSON_EMBEDDED_MODE
 
 #ifdef ARDUINO
 
-// Enable support for Arduino String
+// Enable support for Arduino's String class
 #ifndef ARDUINOJSON_ENABLE_ARDUINO_STRING
 #define ARDUINOJSON_ENABLE_ARDUINO_STRING 1
 #endif
 
-// Enable support for Arduino Stream
+// Enable support for Arduino's Stream class
 #ifndef ARDUINOJSON_ENABLE_ARDUINO_STREAM
 #define ARDUINOJSON_ENABLE_ARDUINO_STREAM 1
 #endif
 
+// Enable support for Arduino's Print class
+#ifndef ARDUINOJSON_ENABLE_ARDUINO_PRINT
+#define ARDUINOJSON_ENABLE_ARDUINO_PRINT 1
+#endif
+
 #else  // ARDUINO
 
-// Disable support for Arduino String
+// Enable support for Arduino's String class
 #ifndef ARDUINOJSON_ENABLE_ARDUINO_STRING
 #define ARDUINOJSON_ENABLE_ARDUINO_STRING 0
 #endif
 
-// Disable support for Arduino Stream
+// Enable support for Arduino's Stream class
 #ifndef ARDUINOJSON_ENABLE_ARDUINO_STREAM
 #define ARDUINOJSON_ENABLE_ARDUINO_STREAM 0
+#endif
+
+// Enable support for Arduino's Print class
+#ifndef ARDUINOJSON_ENABLE_ARDUINO_PRINT
+#define ARDUINOJSON_ENABLE_ARDUINO_PRINT 0
 #endif
 
 #endif  // ARDUINO
@@ -128,6 +128,11 @@
 #else
 #define ARDUINOJSON_ENABLE_PROGMEM 0
 #endif
+#endif
+
+// Convert unicode escape sequence (\u0123) to UTF-8
+#ifndef ARDUINOJSON_DECODE_UNICODE
+#define ARDUINOJSON_DECODE_UNICODE 0
 #endif
 
 // Control the exponentiation threshold for big numbers
@@ -144,9 +149,13 @@
 #ifndef ARDUINOJSON_LITTLE_ENDIAN
 #if defined(_MSC_VER) ||                                                      \
     (defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__) || \
-    (defined(__LITTLE_ENDIAN__))
+    defined(__LITTLE_ENDIAN__) || defined(__i386) || defined(__x86_64)
 #define ARDUINOJSON_LITTLE_ENDIAN 1
 #else
 #define ARDUINOJSON_LITTLE_ENDIAN 0
 #endif
+#endif
+
+#ifndef ARDUINOJSON_TAB
+#define ARDUINOJSON_TAB "  "
 #endif

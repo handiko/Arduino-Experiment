@@ -1,5 +1,5 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #pragma once
@@ -13,7 +13,7 @@ class Pair {
  public:
   Pair(MemoryPool* pool, VariantSlot* slot) {
     if (slot) {
-      _key = slot->key();
+      _key = String(slot->key(), !slot->ownsKey());
       _value = VariantRef(pool, slot->data());
     }
   }
@@ -35,7 +35,7 @@ class PairConst {
  public:
   PairConst(const VariantSlot* slot) {
     if (slot) {
-      _key = slot->key();
+      _key = String(slot->key(), !slot->ownsKey());
       _value = VariantConstRef(slot->data());
     }
   }

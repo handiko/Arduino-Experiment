@@ -1,12 +1,12 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #include <ArduinoJson.h>
 #include <catch.hpp>
 
 TEST_CASE("serialize JsonArray to std::string") {
-  DynamicJsonDocument doc;
+  DynamicJsonDocument doc(4096);
   JsonArray array = doc.to<JsonArray>();
   array.add(4);
   array.add(2);
@@ -27,7 +27,7 @@ TEST_CASE("serialize JsonArray to std::string") {
 }
 
 TEST_CASE("serialize JsonObject to std::string") {
-  DynamicJsonDocument doc;
+  DynamicJsonDocument doc(4096);
   JsonObject obj = doc.to<JsonObject>();
   obj["key"] = "value";
 

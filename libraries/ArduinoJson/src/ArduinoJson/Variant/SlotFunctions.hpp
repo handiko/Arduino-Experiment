@@ -1,29 +1,26 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #pragma once
 
 #include "../Memory/MemoryPool.hpp"
 #include "../Polyfills/assert.hpp"
-#include "../Strings/StringWrappers.hpp"
+#include "../Strings/StringAdapters.hpp"
 #include "VariantData.hpp"
 
 namespace ARDUINOJSON_NAMESPACE {
 
-template <typename TKey>
-inline bool slotSetKey(VariantSlot* var, TKey key, MemoryPool* pool) {
+template <typename TAdaptedString>
+inline bool slotSetKey(VariantSlot* var, TAdaptedString key, MemoryPool* pool) {
   if (!var) return false;
-  char* dup = key.save(pool);
-  if (!dup) return false;
-  var->setOwnedKey(dup);
-  return true;
-}
-
-inline bool slotSetKey(VariantSlot* var, ConstRamStringWrapper key,
-                       MemoryPool*) {
-  if (!var) return false;
-  var->setLinkedKey(key.c_str());
+  if (key.isStatic()) {
+    var->setLinkedKey(make_not_null(key.data()));
+  } else {
+    const char* dup = key.save(pool);
+    if (!dup) return false;
+    var->setOwnedKey(make_not_null(dup));
+  }
   return true;
 }
 
@@ -34,5 +31,9 @@ inline size_t slotSize(const VariantSlot* var) {
     var = var->next();
   }
   return n;
+}
+
+inline VariantData* slotData(VariantSlot* slot) {
+  return reinterpret_cast<VariantData*>(slot);
 }
 }  // namespace ARDUINOJSON_NAMESPACE

@@ -1,5 +1,5 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #include <ArduinoJson.h>
@@ -7,7 +7,7 @@
 
 template <typename T>
 void check(T value, const char* expected_data, size_t expected_len) {
-  DynamicJsonDocument doc;
+  DynamicJsonDocument doc(4096);
   JsonVariant variant = doc.to<JsonVariant>();
   variant.set(value);
   std::string expected(expected_data, expected_data + expected_len);

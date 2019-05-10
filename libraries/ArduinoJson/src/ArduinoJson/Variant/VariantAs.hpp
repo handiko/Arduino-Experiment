@@ -1,5 +1,5 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #pragma once
@@ -76,6 +76,14 @@ inline typename enable_if<is_same<T, const char*>::value ||
 variantAs(const VariantData* _data) {
   return _data != 0 ? _data->asString() : 0;
 }
+
+template <typename T>
+inline typename enable_if<is_same<ArrayConstRef, T>::value, T>::type variantAs(
+    const VariantData* _data);
+
+template <typename T>
+inline typename enable_if<is_same<ObjectConstRef, T>::value, T>::type variantAs(
+    const VariantData* _data);
 
 template <typename T>
 inline typename enable_if<is_same<VariantConstRef, T>::value, T>::type

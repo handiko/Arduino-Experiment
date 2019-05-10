@@ -4,7 +4,7 @@
 
 template <typename T>
 void check(T value, const std::string &expected) {
-  DynamicJsonDocument doc;
+  DynamicJsonDocument doc(4096);
   doc.to<JsonVariant>().set(value);
   char buffer[256] = "";
   size_t returnValue = serializeJson(doc, buffer, sizeof(buffer));
@@ -12,8 +12,8 @@ void check(T value, const std::string &expected) {
   REQUIRE(expected.size() == returnValue);
 }
 
-TEST_CASE("serializeJson(JsonObjectSubscript)") {
-  DynamicJsonDocument doc;
+TEST_CASE("serializeJson(MemberProxy)") {
+  DynamicJsonDocument doc(4096);
   deserializeJson(doc, "{\"hello\":42}");
   JsonObject obj = doc.as<JsonObject>();
   std::string result;
@@ -23,8 +23,8 @@ TEST_CASE("serializeJson(JsonObjectSubscript)") {
   REQUIRE(result == "42");
 }
 
-TEST_CASE("serializeJson(JsonArraySubscript)") {
-  DynamicJsonDocument doc;
+TEST_CASE("serializeJson(ElementProxy)") {
+  DynamicJsonDocument doc(4096);
   deserializeJson(doc, "[42]");
   JsonArray arr = doc.as<JsonArray>();
   std::string result;
@@ -35,7 +35,7 @@ TEST_CASE("serializeJson(JsonArraySubscript)") {
 }
 
 TEST_CASE("serializeJson(JsonVariantSubscript)") {
-  DynamicJsonDocument doc;
+  DynamicJsonDocument doc(4096);
   deserializeJson(doc, "[42]");
   JsonVariant var = doc.as<JsonVariant>();
   std::string result;

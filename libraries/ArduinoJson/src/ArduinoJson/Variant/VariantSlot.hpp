@@ -1,9 +1,10 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #pragma once
 
+#include "../Polyfills/gsl/not_null.hpp"
 #include "../Polyfills/type_traits.hpp"
 #include "../Variant/VariantContent.hpp"
 
@@ -67,14 +68,14 @@ class VariantSlot {
     _next = VariantSlotDiff(slot - this);
   }
 
-  void setOwnedKey(const char* k) {
+  void setOwnedKey(not_null<const char*> k) {
     _flags |= KEY_IS_OWNED;
-    _key = k;
+    _key = k.get();
   }
 
-  void setLinkedKey(const char* k) {
+  void setLinkedKey(not_null<const char*> k) {
     _flags &= VALUE_MASK;
-    _key = k;
+    _key = k.get();
   }
 
   const char* key() const {

@@ -1,5 +1,5 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #pragma once
@@ -16,11 +16,17 @@
 namespace ARDUINOJSON_NAMESPACE {
 
 class ObjectRef;
-class ArraySubscript;
+template <typename>
+class ElementProxy;
 
 template <typename TData>
 class ArrayRefBase {
  public:
+  operator VariantConstRef() const {
+    const void* data = _data;  // prevent warning cast-align
+    return VariantConstRef(reinterpret_cast<const VariantData*>(data));
+  }
+
   template <typename Visitor>
   FORCE_INLINE void accept(Visitor& visitor) const {
     arrayAccept(_data, visitor);
@@ -30,8 +36,12 @@ class ArrayRefBase {
     return _data == 0;
   }
 
-  FORCE_INLINE VariantConstRef operator[](size_t index) const {
-    return VariantConstRef(_data ? _data->get(index) : 0);
+  FORCE_INLINE size_t memoryUsage() const {
+    return _data ? _data->memoryUsage() : 0;
+  }
+
+  FORCE_INLINE size_t nesting() const {
+    return _data ? _data->nesting() : 0;
   }
 
   FORCE_INLINE size_t size() const {
@@ -66,9 +76,19 @@ class ArrayConstRef : public ArrayRefBase<const CollectionData>,
   FORCE_INLINE bool operator==(ArrayConstRef rhs) const {
     return arrayEquals(_data, rhs._data);
   }
+
+  FORCE_INLINE VariantConstRef operator[](size_t index) const {
+    return getElement(index);
+  }
+
+  FORCE_INLINE VariantConstRef getElement(size_t index) const {
+    return VariantConstRef(_data ? _data->get(index) : 0);
+  }
 };
 
-class ArrayRef : public ArrayRefBase<CollectionData>, public Visitable {
+class ArrayRef : public ArrayRefBase<CollectionData>,
+                 public ArrayShortcuts<ArrayRef>,
+                 public Visitable {
   typedef ArrayRefBase<CollectionData> base_type;
 
  public:
@@ -79,35 +99,15 @@ class ArrayRef : public ArrayRefBase<CollectionData>, public Visitable {
       : base_type(data), _pool(pool) {}
 
   operator VariantRef() {
-    return VariantRef(_pool, reinterpret_cast<VariantData*>(_data));
+    void* data = _data;  // prevent warning cast-align
+    return VariantRef(_pool, reinterpret_cast<VariantData*>(data));
   }
 
   operator ArrayConstRef() const {
     return ArrayConstRef(_data);
   }
 
-  // Adds the specified value at the end of the array.
-  //
-  // bool add(TValue);
-  // TValue = bool, long, int, short, float, double, serialized, VariantRef,
-  //          std::string, String, ObjectRef
-  template <typename T>
-  FORCE_INLINE bool add(const T& value) const {
-    return add().set(value);
-  }
-  // Adds the specified value at the end of the array.
-  FORCE_INLINE bool add(ArrayRef value) const {
-    return add().set(value);
-  }
-  //
-  // bool add(TValue);
-  // TValue = char*, const char*, const __FlashStringHelper*
-  template <typename T>
-  FORCE_INLINE bool add(T* value) const {
-    return add().set(value);
-  }
-
-  VariantRef add() const {
+  VariantRef addElement() const {
     return VariantRef(_pool, arrayAdd(_data, _pool));
   }
 
@@ -120,76 +120,18 @@ class ArrayRef : public ArrayRefBase<CollectionData>, public Visitable {
     return iterator();
   }
 
-  // Imports a 1D array
-  template <typename T, size_t N>
-  FORCE_INLINE bool copyFrom(T (&array)[N]) const {
-    return copyFrom(array, N);
-  }
-
-  // Imports a 1D array
-  template <typename T>
-  bool copyFrom(T* array, size_t len) const {
-    bool ok = true;
-    for (size_t i = 0; i < len; i++) {
-      ok &= add(array[i]);
-    }
-    return ok;
-  }
-
-  // Imports a 2D array
-  template <typename T, size_t N1, size_t N2>
-  bool copyFrom(T (&array)[N1][N2]) const {
-    bool ok = true;
-    for (size_t i = 0; i < N1; i++) {
-      ArrayRef nestedArray = createNestedArray();
-      for (size_t j = 0; j < N2; j++) {
-        ok &= nestedArray.add(array[i][j]);
-      }
-    }
-    return ok;
-  }
-
   // Copy a ArrayRef
-  FORCE_INLINE bool copyFrom(ArrayRef src) const {
+  FORCE_INLINE bool set(ArrayConstRef src) const {
     if (!_data || !src._data) return false;
     return _data->copyFrom(*src._data, _pool);
   }
-
-  // Exports a 1D array
-  template <typename T, size_t N>
-  FORCE_INLINE size_t copyTo(T (&array)[N]) const {
-    return copyTo(array, N);
-  }
-
-  // Exports a 1D array
-  template <typename T>
-  size_t copyTo(T* array, size_t len) const {
-    size_t i = 0;
-    for (iterator it = begin(); it != end() && i < len; ++it) array[i++] = *it;
-    return i;
-  }
-
-  // Exports a 2D array
-  template <typename T, size_t N1, size_t N2>
-  void copyTo(T (&array)[N1][N2]) const {
-    if (!_data) return;
-    size_t i = 0;
-    for (iterator it = begin(); it != end() && i < N1; ++it) {
-      it->as<ArrayRef>().copyTo(array[i++]);
-    }
-  }
-
-  FORCE_INLINE ArrayRef createNestedArray() const;
-  FORCE_INLINE ObjectRef createNestedObject() const;
-
-  FORCE_INLINE ArraySubscript operator[](size_t index) const;
 
   FORCE_INLINE bool operator==(ArrayRef rhs) const {
     return arrayEquals(_data, rhs._data);
   }
 
   // Gets the value at the specified index.
-  FORCE_INLINE VariantRef get(size_t index) const {
+  FORCE_INLINE VariantRef getElement(size_t index) const {
     return VariantRef(_pool, _data ? _data->get(index) : 0);
   }
 

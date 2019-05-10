@@ -1,5 +1,5 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #pragma once
@@ -17,29 +17,26 @@ namespace ARDUINOJSON_NAMESPACE {
 template <typename TData>
 class ObjectRefBase {
  public:
+  operator VariantConstRef() const {
+    const void* data = _data;  // prevent warning cast-align
+    return VariantConstRef(reinterpret_cast<const VariantData*>(data));
+  }
+
   template <typename Visitor>
   FORCE_INLINE void accept(Visitor& visitor) const {
     objectAccept(_data, visitor);
   }
 
-  // Tells weither the specified key is present and associated with a value.
-  //
-  // bool containsKey(TKey);
-  // TKey = const std::string&, const String&
-  template <typename TKey>
-  FORCE_INLINE bool containsKey(const TKey& key) const {
-    return objectContainsKey(_data, wrapString(key));
-  }
-  //
-  // bool containsKey(TKey);
-  // TKey = char*, const char*, char[], const char[], const __FlashStringHelper*
-  template <typename TKey>
-  FORCE_INLINE bool containsKey(TKey* key) const {
-    return objectContainsKey(_data, wrapString(key));
-  }
-
   FORCE_INLINE bool isNull() const {
     return _data == 0;
+  }
+
+  FORCE_INLINE size_t memoryUsage() const {
+    return _data ? _data->memoryUsage() : 0;
+  }
+
+  FORCE_INLINE size_t nesting() const {
+    return _data ? _data->nesting() : 0;
   }
 
   FORCE_INLINE size_t size() const {
@@ -71,41 +68,53 @@ class ObjectConstRef : public ObjectRefBase<const CollectionData>,
     return iterator();
   }
 
-  // Gets the value associated with the specified key.
-  //
-  // TValue get<TValue>(TKey) const;
-  // TKey = const std::string&, const String&
-  // TValue = bool, char, long, int, short, float, double,
-  //          std::string, String, ArrayConstRef, ObjectConstRef
-  template <typename TKey>
-  FORCE_INLINE VariantConstRef get(const TKey& key) const {
-    return get_impl(wrapString(key));
-  }
-  //
-  // TValue get<TValue>(TKey) const;
-  // TKey = char*, const char*, const __FlashStringHelper*
-  // TValue = bool, char, long, int, short, float, double,
-  //          std::string, String, ArrayConstRef, ObjectConstRef
-  template <typename TKey>
-  FORCE_INLINE VariantConstRef get(TKey* key) const {
-    return get_impl(wrapString(key));
+  // containsKey(const std::string&) const
+  // containsKey(const String&) const
+  template <typename TString>
+  FORCE_INLINE bool containsKey(const TString& key) const {
+    return !getMember(key).isUndefined();
   }
 
-  //
-  // VariantConstRef operator[](TKey) const;
-  // TKey = const std::string&, const String&
-  template <typename TKey>
-  FORCE_INLINE typename enable_if<IsString<TKey>::value, VariantConstRef>::type
-  operator[](const TKey& key) const {
-    return get_impl(wrapString(key));
+  // containsKey(char*) const
+  // containsKey(const char*) const
+  // containsKey(const __FlashStringHelper*) const
+  template <typename TChar>
+  FORCE_INLINE bool containsKey(TChar* key) const {
+    return !getMember(key).isUndefined();
   }
-  //
-  // VariantConstRef operator[](TKey) const;
-  // TKey = const char*, const char[N], const __FlashStringHelper*
-  template <typename TKey>
-  FORCE_INLINE typename enable_if<IsString<TKey*>::value, VariantConstRef>::type
-  operator[](TKey* key) const {
-    return get_impl(wrapString(key));
+
+  // getMember(const std::string&) const
+  // getMember(const String&) const
+  template <typename TString>
+  FORCE_INLINE VariantConstRef getMember(const TString& key) const {
+    return get_impl(adaptString(key));
+  }
+
+  // getMember(char*) const
+  // getMember(const char*) const
+  // getMember(const __FlashStringHelper*) const
+  template <typename TChar>
+  FORCE_INLINE VariantConstRef getMember(TChar* key) const {
+    return get_impl(adaptString(key));
+  }
+
+  // operator[](const std::string&) const
+  // operator[](const String&) const
+  template <typename TString>
+  FORCE_INLINE
+      typename enable_if<IsString<TString>::value, VariantConstRef>::type
+      operator[](const TString& key) const {
+    return get_impl(adaptString(key));
+  }
+
+  // operator[](char*) const
+  // operator[](const char*) const
+  // operator[](const __FlashStringHelper*) const
+  template <typename TChar>
+  FORCE_INLINE
+      typename enable_if<IsString<TChar*>::value, VariantConstRef>::type
+      operator[](TChar* key) const {
+    return get_impl(adaptString(key));
   }
 
   FORCE_INLINE bool operator==(ObjectConstRef rhs) const {
@@ -113,13 +122,15 @@ class ObjectConstRef : public ObjectRefBase<const CollectionData>,
   }
 
  private:
-  template <typename TKey>
-  FORCE_INLINE VariantConstRef get_impl(TKey key) const {
+  template <typename TAdaptedString>
+  FORCE_INLINE VariantConstRef get_impl(TAdaptedString key) const {
     return VariantConstRef(objectGet(_data, key));
   }
 };
 
-class ObjectRef : public ObjectRefBase<CollectionData>, public Visitable {
+class ObjectRef : public ObjectRefBase<CollectionData>,
+                  public ObjectShortcuts<ObjectRef>,
+                  public Visitable {
   typedef ObjectRefBase<CollectionData> base_type;
 
  public:
@@ -130,7 +141,8 @@ class ObjectRef : public ObjectRefBase<CollectionData>, public Visitable {
       : base_type(data), _pool(buf) {}
 
   operator VariantRef() const {
-    return VariantRef(_pool, reinterpret_cast<VariantData*>(_data));
+    void* data = _data;  // prevent warning cast-align
+    return VariantRef(_pool, reinterpret_cast<VariantData*>(data));
   }
 
   operator ObjectConstRef() const {
@@ -151,73 +163,39 @@ class ObjectRef : public ObjectRefBase<CollectionData>, public Visitable {
     _data->clear();
   }
 
-  FORCE_INLINE bool copyFrom(ObjectConstRef src) {
+  FORCE_INLINE bool set(ObjectConstRef src) {
     if (!_data || !src._data) return false;
     return _data->copyFrom(*src._data, _pool);
   }
 
-  // Creates and adds a ArrayRef.
-  //
-  // ArrayRef createNestedArray(TKey);
-  // TKey = const std::string&, const String&
-  template <typename TKey>
-  FORCE_INLINE ArrayRef createNestedArray(const TKey& key) const;
-  // ArrayRef createNestedArray(TKey);
-  // TKey = char*, const char*, char[], const char[], const __FlashStringHelper*
-  template <typename TKey>
-  FORCE_INLINE ArrayRef createNestedArray(TKey* key) const;
-
-  // Creates and adds a ObjectRef.
-  //
-  // ObjectRef createNestedObject(TKey);
-  // TKey = const std::string&, const String&
-  template <typename TKey>
-  FORCE_INLINE ObjectRef createNestedObject(const TKey& key) const {
-    return set(key).template to<ObjectRef>();
-  }
-  //
-  // ObjectRef createNestedObject(TKey);
-  // TKey = char*, const char*, char[], const char[], const __FlashStringHelper*
-  template <typename TKey>
-  FORCE_INLINE ObjectRef createNestedObject(TKey* key) const {
-    return set(key).template to<ObjectRef>();
+  // getMember(const std::string&) const
+  // getMember(const String&) const
+  template <typename TString>
+  FORCE_INLINE VariantRef getMember(const TString& key) const {
+    return get_impl(adaptString(key));
   }
 
-  // Gets the value associated with the specified key.
-  //
-  // TValue get<TValue>(TKey) const;
-  // TKey = const std::string&, const String&
-  // TValue = bool, char, long, int, short, float, double,
-  //          std::string, String, ArrayRef, ObjectRef
-  template <typename TKey>
-  FORCE_INLINE VariantRef get(const TKey& key) const {
-    return get_impl(wrapString(key));
-  }
-  //
-  // TValue get<TValue>(TKey) const;
-  // TKey = char*, const char*, const __FlashStringHelper*
-  // TValue = bool, char, long, int, short, float, double,
-  //          std::string, String, ArrayRef, ObjectRef
-  template <typename TKey>
-  FORCE_INLINE VariantRef get(TKey* key) const {
-    return get_impl(wrapString(key));
+  // getMember(char*) const
+  // getMember(const char*) const
+  // getMember(const __FlashStringHelper*) const
+  template <typename TChar>
+  FORCE_INLINE VariantRef getMember(TChar* key) const {
+    return get_impl(adaptString(key));
   }
 
-  // Gets or sets the value associated with the specified key.
-  //
-  // ObjectSubscript operator[](TKey)
-  // TKey = const std::string&, const String&
-  template <typename TKey>
-  FORCE_INLINE ObjectSubscript<const TKey&> operator[](const TKey& key) const {
-    return ObjectSubscript<const TKey&>(*this, key);
+  // getOrAddMember(const std::string&) const
+  // getOrAddMember(const String&) const
+  template <typename TString>
+  FORCE_INLINE VariantRef getOrAddMember(const TString& key) const {
+    return getOrCreate_impl(adaptString(key));
   }
-  //
-  // ObjectSubscript operator[](TKey)
-  // TKey = char*, const char*, char[], const char[N], const
-  // __FlashStringHelper*
-  template <typename TKey>
-  FORCE_INLINE ObjectSubscript<TKey*> operator[](TKey* key) const {
-    return ObjectSubscript<TKey*>(*this, key);
+
+  // getOrAddMember(char*) const
+  // getOrAddMember(const char*) const
+  // getOrAddMember(const __FlashStringHelper*) const
+  template <typename TChar>
+  FORCE_INLINE VariantRef getOrAddMember(TChar* key) const {
+    return getOrCreate_impl(adaptString(key));
   }
 
   FORCE_INLINE bool operator==(ObjectRef rhs) const {
@@ -229,41 +207,30 @@ class ObjectRef : public ObjectRefBase<CollectionData>, public Visitable {
     _data->remove(it.internal());
   }
 
-  // Removes the specified key and the associated value.
-  //
-  // void remove(TKey);
-  // TKey = const std::string&, const String&
-  template <typename TKey>
-  FORCE_INLINE void remove(const TKey& key) const {
-    objectRemove(_data, wrapString(key));
-  }
-  //
-  // void remove(TKey);
-  // TKey = char*, const char*, char[], const char[], const __FlashStringHelper*
-  template <typename TKey>
-  FORCE_INLINE void remove(TKey* key) const {
-    objectRemove(_data, wrapString(key));
+  // remove(const std::string&) const
+  // remove(const String&) const
+  template <typename TString>
+  FORCE_INLINE void remove(const TString& key) const {
+    objectRemove(_data, adaptString(key));
   }
 
-  template <typename TKey>
-  FORCE_INLINE VariantRef set(TKey* key) const {
-    return set_impl(wrapString(key));
-  }
-
-  template <typename TKey>
-  FORCE_INLINE VariantRef set(const TKey& key) const {
-    return set_impl(wrapString(key));
+  // remove(char*) const
+  // remove(const char*) const
+  // remove(const __FlashStringHelper*) const
+  template <typename TChar>
+  FORCE_INLINE void remove(TChar* key) const {
+    objectRemove(_data, adaptString(key));
   }
 
  private:
-  template <typename TKey>
-  FORCE_INLINE VariantRef get_impl(TKey key) const {
+  template <typename TAdaptedString>
+  FORCE_INLINE VariantRef get_impl(TAdaptedString key) const {
     return VariantRef(_pool, objectGet(_data, key));
   }
 
-  template <typename TKey>
-  FORCE_INLINE VariantRef set_impl(TKey key) const {
-    return VariantRef(_pool, objectSet(_data, key, _pool));
+  template <typename TAdaptedString>
+  FORCE_INLINE VariantRef getOrCreate_impl(TAdaptedString key) const {
+    return VariantRef(_pool, objectGetOrCreate(_data, key, _pool));
   }
 
   MemoryPool* _pool;

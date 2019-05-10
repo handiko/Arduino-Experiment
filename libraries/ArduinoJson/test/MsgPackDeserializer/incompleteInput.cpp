@@ -1,12 +1,12 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #include <ArduinoJson.h>
 #include <catch.hpp>
 
 DeserializationError deserialize(const char* input, size_t len) {
-  DynamicJsonDocument doc;
+  DynamicJsonDocument doc(4096);
 
   return deserializeMsgPack(doc, input, len);
 }
@@ -60,9 +60,11 @@ TEST_CASE("deserializeMsgPack() returns IncompleteInput") {
     checkAllSizes("\xCE\x00\x00\x00\x01", 5);
   }
 
+#if ARDUINOJSON_USE_LONG_LONG
   SECTION("uint 64") {
     checkAllSizes("\xCF\x00\x00\x00\x00\x00\x00\x00\x00", 9);
   }
+#endif
 
   SECTION("int 8") {
     checkAllSizes("\xD0\x01", 2);
@@ -76,9 +78,11 @@ TEST_CASE("deserializeMsgPack() returns IncompleteInput") {
     checkAllSizes("\xD2\x00\x00\x00\x01", 5);
   }
 
+#if ARDUINOJSON_USE_LONG_LONG
   SECTION("int 64") {
     checkAllSizes("\xD3\x00\x00\x00\x00\x00\x00\x00\x00", 9);
   }
+#endif
 
   SECTION("float 32") {
     checkAllSizes("\xCA\x40\x48\xF5\xC3", 5);

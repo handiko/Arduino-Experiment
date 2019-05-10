@@ -1,5 +1,5 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 //
 // This example shows how to parse a JSON document in an HTTP response.
@@ -15,6 +15,8 @@
 //     2.302038
 //   ]
 // }
+//
+// https://arduinojson.org/v6/example/http-client/
 
 #include <ArduinoJson.h>
 #include <Ethernet.h>
@@ -71,7 +73,7 @@ void setup() {
   }
 
   // Allocate the JSON document
-  // Use arduinojson.org/assistant to compute the capacity.
+  // Use arduinojson.org/v6/assistant to compute the capacity.
   const size_t capacity = JSON_OBJECT_SIZE(3) + JSON_ARRAY_SIZE(2) + 60;
   DynamicJsonDocument doc(capacity);
 
@@ -84,12 +86,11 @@ void setup() {
   }
 
   // Extract values
-  JsonObject root = doc.as<JsonObject>();
   Serial.println(F("Response:"));
-  Serial.println(root["sensor"].as<char*>());
-  Serial.println(root["time"].as<char*>());
-  Serial.println(root["data"][0].as<char*>());
-  Serial.println(root["data"][1].as<char*>());
+  Serial.println(doc["sensor"].as<char*>());
+  Serial.println(doc["time"].as<long>());
+  Serial.println(doc["data"][0].as<float>(), 6);
+  Serial.println(doc["data"][1].as<float>(), 6);
 
   // Disconnect
   client.stop();
@@ -99,4 +100,16 @@ void loop() {
   // not used in this example
 }
 
-// Visit https://arduinojson.org/v6/example/http-client/ for more.
+// See also
+// --------
+//
+// https://arduinojson.org/ contains the documentation for all the functions
+// used above. It also includes an FAQ that will help you solve any
+// serialization  problem.
+//
+// The book "Mastering ArduinoJson" contains a tutorial on deserialization
+// showing how to parse the response from GitHub's API. In the last chapter,
+// it shows how to parse the huge documents from OpenWeatherMap
+// and Reddit.
+// Learn more at https://arduinojson.org/book/
+// Use the coupon code TWENTY for a 20% discount ❤❤❤❤❤

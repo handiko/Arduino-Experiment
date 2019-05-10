@@ -1,12 +1,12 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #include <ArduinoJson.h>
 #include <catch.hpp>
 
 void check(std::string originalJson) {
-  DynamicJsonDocument doc;
+  DynamicJsonDocument doc(16384);
 
   std::string prettyJson;
   deserializeJson(doc, originalJson);

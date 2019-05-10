@@ -1,6 +1,119 @@
 ArduinoJson: change log
 =======================
 
+v6.10.1 (2019-04-23)
+-------
+
+* Fixed error "attributes are not allowed on a function-definition"
+* Fixed `deserializeJson()` not being picky enough (issue #969)
+* Fixed error "no matching function for call to write(uint8_t)" (issue #972)
+
+v6.10.0 (2019-03-22)
+-------
+
+* Fixed an integer overflow in the JSON deserializer
+* Added overflow handling in `JsonVariant::as<T>()` and `JsonVariant::is<T>()`.
+   - `as<T>()` returns `0` if the integer `T` overflows
+   - `is<T>()` returns `false` if the integer `T` overflows
+* Added `BasicJsonDocument` to support custom allocator (issue #876)
+* Added `JsonDocument::containsKey()` (issue #938)
+* Added `JsonVariant::containsKey()`
+
+v6.9.1 (2019-03-01)
+------
+
+* Fixed warning "unused variable" with GCC 4.4 (issue #912)
+* Fixed warning "cast  increases required alignment" (issue #914)
+* Fixed warning "conversion may alter value" (issue #914)
+* Fixed naming conflict with "CAPACITY" (issue #839)
+* Muted warning "will change in GCC 7.1" (issue #914)
+* Added a clear error message for `StaticJsonBuffer` and `DynamicJsonBuffer`
+* Marked ArduinoJson.h  as a "system header"
+
+v6.9.0 (2019-02-26)
+------
+
+* Decode escaped Unicode characters like \u00DE (issue #304, PR #791)
+  Many thanks to Daniel Schulte (aka @trilader) who implemented this feature.
+* Added option ARDUINOJSON_DECODE_UNICODE to enable it
+* Converted `JsonArray::copyFrom()/copyTo()` to free functions `copyArray()`
+* Renamed `JsonArray::copyFrom()` and `JsonObject::copyFrom()` to `set()`
+* Renamed `JsonArray::get()` to `getElement()`
+* Renamed `JsonArray::add()` (without arg) to `addElement()`
+* Renamed `JsonObject::get()` to `getMember()`
+* Renamed `JsonObject::getOrCreate()` to `getOrAddMember()`
+* Fixed `JsonVariant::isNull()` not returning `true` after `set((char*)0)`
+* Fixed segfault after `variant.set(serialized((char*)0))`
+* Detect `IncompleteInput` in `false`, `true`, and `null`
+* Added `JsonDocument::size()`
+* Added `JsonDocument::remove()`
+* Added `JsonVariant::clear()`
+* Added `JsonVariant::remove()`
+
+v6.8.0-beta (2019-01-30)
+-----------
+
+* Import functions in the ArduinoJson namespace to get clearer errors
+* Improved syntax highlighting in Arduino IDE
+* Removed default capacity of `DynamicJsonDocument`
+* `JsonArray::copyFrom()` accepts `JsonArrayConst`
+* `JsonVariant::set()` accepts `JsonArrayConst` and `JsonObjectConst`
+* `JsonDocument` was missing in the ArduinoJson namespace
+* Added `memoryUsage()` to `JsonArray`, `JsonObject`, and `JsonVariant`
+* Added `nesting()` to `JsonArray`, `JsonDocument`, `JsonObject`, and `JsonVariant`
+* Replaced `JsonDocument::nestingLimit` with an additional parameter
+  to `deserializeJson()` and `deserializeMsgPack()`
+* Fixed uninitialized variant in `JsonDocument`
+* Fixed `StaticJsonDocument` copy constructor and copy assignment
+* The copy constructor of `DynamicJsonDocument` chooses the capacity according to the memory usage of the source, not from the capacity of the source.
+* Added the ability to create/assign a `StaticJsonDocument`/`DynamicJsonDocument` from a `JsonArray`/`JsonObject`/`JsonVariant`
+* Added `JsonDocument::isNull()`
+* Added `JsonDocument::operator[]`
+* Added `ARDUINOJSON_TAB` to configure the indentation character
+* Reduced the size of the pretty JSON serializer
+* Added `add()`, `createNestedArray()` and `createNestedObject()` to `JsonVariant`
+* `JsonVariant` automatically promotes to `JsonObject` or `JsonArray` on write.
+  Calling `JsonVariant::to<T>()` is not required anymore.
+* `JsonDocument` now support the same operations as `JsonVariant`.
+  Calling `JsonDocument::as<T>()` is not required anymore.
+* Fixed example `JsonHttpClient.ino`
+* User can now use a `JsonString` as a key or a value
+
+> ### BREAKING CHANGES
+> 
+> #### `DynamicJsonDocument`'s constructor
+> 
+> The parameter to the constructor of `DynamicJsonDocument` is now mandatory
+>
+> Old code:
+>
+> ```c++
+> DynamicJsonDocument doc;
+> ```
+>
+> New code:
+>
+> ```c++
+> DynamicJsonDocument doc(1024);
+> ```
+> 
+> #### Nesting limit
+> 
+> `JsonDocument::nestingLimit` was replaced with a new parameter to `deserializeJson()` and `deserializeMsgPack()`.
+> 
+> Old code:
+> 
+> ```c++
+> doc.nestingLimit = 15;
+> deserializeJson(doc, input);
+> ```
+> 
+> New code: 
+> 
+> ```c++
+> deserializeJson(doc, input, DeserializationOption::NestingLimit(15));
+> ```
+
 v6.7.0-beta (2018-12-07)
 -----------
 

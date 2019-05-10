@@ -1,16 +1,16 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #include <ArduinoJson.h>
 #include <catch.hpp>
 
 TEST_CASE("JsonArray::operator==()") {
-  DynamicJsonDocument doc1;
+  DynamicJsonDocument doc1(4096);
   JsonArray array1 = doc1.to<JsonArray>();
   JsonArrayConst array1c = array1;
 
-  DynamicJsonDocument doc2;
+  DynamicJsonDocument doc2(4096);
   JsonArray array2 = doc2.to<JsonArray>();
   JsonArrayConst array2c = array2;
 

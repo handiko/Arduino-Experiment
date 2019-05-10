@@ -1,12 +1,12 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #include <ArduinoJson.h>
 #include <catch.hpp>
 
 TEST_CASE("JsonVariant::operator[]") {
-  DynamicJsonDocument doc;
+  DynamicJsonDocument doc(4096);
   JsonVariant var = doc.to<JsonVariant>();
 
   SECTION("The JsonVariant is undefined") {
@@ -30,7 +30,8 @@ TEST_CASE("JsonVariant::operator[]") {
       array.add("element at index 1");
 
       REQUIRE(2 == var.size());
-      REQUIRE(std::string("element at index 0") == var[0]);
+      var[0].as<std::string>();
+      // REQUIRE(std::string("element at index 0") == );
       REQUIRE(std::string("element at index 1") == var[1]);
       REQUIRE(std::string("element at index 0") ==
               var[static_cast<unsigned char>(0)]);  // issue #381
@@ -122,7 +123,7 @@ TEST_CASE("JsonVariant::operator[]") {
 }
 
 TEST_CASE("JsonVariantConst::operator[]") {
-  DynamicJsonDocument doc;
+  DynamicJsonDocument doc(4096);
   JsonVariant var = doc.to<JsonVariant>();
   JsonVariantConst cvar = var;
 
@@ -170,5 +171,25 @@ TEST_CASE("JsonVariantConst::operator[]") {
       REQUIRE(cvar["c"].isNull());
       REQUIRE(cvar[0].isNull());
     }
+  }
+
+  SECTION("Auto promote null JsonVariant to JsonObject") {
+    var["hello"] = "world";
+
+    REQUIRE(var.is<JsonObject>() == true);
+  }
+
+  SECTION("Don't auto promote non-null JsonVariant to JsonObject") {
+    var.set(42);
+    var["hello"] = "world";
+
+    REQUIRE(var.is<JsonObject>() == false);
+  }
+
+  SECTION("Don't auto promote null JsonVariant to JsonObject when reading") {
+    const char* value = var["hello"];
+
+    REQUIRE(var.is<JsonObject>() == false);
+    REQUIRE(value == 0);
   }
 }

@@ -1,5 +1,5 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #pragma once
@@ -15,5 +15,6 @@
 #include "type_traits/is_same.hpp"
 #include "type_traits/is_signed.hpp"
 #include "type_traits/is_unsigned.hpp"
+#include "type_traits/make_unsigned.hpp"
 #include "type_traits/remove_const.hpp"
 #include "type_traits/remove_reference.hpp"

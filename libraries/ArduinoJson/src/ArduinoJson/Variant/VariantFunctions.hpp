@@ -1,5 +1,5 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #pragma once
@@ -14,6 +14,10 @@ inline void variantAccept(const VariantData *var, Visitor &visitor) {
     var->accept(visitor);
   else
     visitor.visitNull();
+}
+
+inline const CollectionData *variantAsArray(const VariantData *var) {
+  return var != 0 ? var->asArray() : 0;
 }
 
 inline const CollectionData *variantAsObject(const VariantData *var) {
@@ -48,8 +52,9 @@ inline bool variantIsBoolean(const VariantData *var) {
   return var && var->isBoolean();
 }
 
+template <typename T>
 inline bool variantIsInteger(const VariantData *var) {
-  return var && var->isInteger();
+  return var && var->isInteger<T>();
 }
 
 inline bool variantIsFloat(const VariantData *var) {
@@ -140,6 +145,22 @@ inline CollectionData *variantToArray(VariantData *var) {
 inline CollectionData *variantToObject(VariantData *var) {
   if (!var) return 0;
   return &var->toObject();
+}
+
+inline NO_INLINE VariantData *variantAdd(VariantData *var, MemoryPool *pool) {
+  return var != 0 ? var->addElement(pool) : 0;
+}
+
+template <typename TChar>
+NO_INLINE VariantData *variantGetOrCreate(VariantData *var, TChar *key,
+                                          MemoryPool *pool) {
+  return var != 0 ? var->getOrAddMember(adaptString(key), pool) : 0;
+}
+
+template <typename TString>
+NO_INLINE VariantData *variantGetOrCreate(VariantData *var, const TString &key,
+                                          MemoryPool *pool) {
+  return var != 0 ? var->getOrAddMember(adaptString(key), pool) : 0;
 }
 
 }  // namespace ARDUINOJSON_NAMESPACE

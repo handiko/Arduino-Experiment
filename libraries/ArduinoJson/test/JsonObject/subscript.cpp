@@ -1,12 +1,12 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #include <ArduinoJson.h>
 #include <catch.hpp>
 
 TEST_CASE("JsonObject::operator[]") {
-  DynamicJsonDocument doc;
+  DynamicJsonDocument doc(4096);
   JsonObject obj = doc.to<JsonObject>();
 
   SECTION("int") {
@@ -52,7 +52,7 @@ TEST_CASE("JsonObject::operator[]") {
   }
 
   SECTION("array") {
-    DynamicJsonDocument doc2;
+    DynamicJsonDocument doc2(4096);
     JsonArray arr = doc2.to<JsonArray>();
 
     obj["hello"] = arr;
@@ -63,7 +63,7 @@ TEST_CASE("JsonObject::operator[]") {
   }
 
   SECTION("object") {
-    DynamicJsonDocument doc2;
+    DynamicJsonDocument doc2(4096);
     JsonObject obj2 = doc2.to<JsonObject>();
 
     obj["hello"] = obj2;
@@ -74,7 +74,7 @@ TEST_CASE("JsonObject::operator[]") {
   }
 
   SECTION("array subscript") {
-    DynamicJsonDocument doc2;
+    DynamicJsonDocument doc2(4096);
     JsonArray arr = doc2.to<JsonArray>();
     arr.add(42);
 
@@ -84,7 +84,7 @@ TEST_CASE("JsonObject::operator[]") {
   }
 
   SECTION("object subscript") {
-    DynamicJsonDocument doc2;
+    DynamicJsonDocument doc2(4096);
     JsonObject obj2 = doc2.to<JsonObject>();
     obj2["x"] = 42;
 
@@ -139,6 +139,18 @@ TEST_CASE("JsonObject::operator[]") {
     obj[std::string("hello")] = std::string("world");
     const size_t expectedSize = JSON_OBJECT_SIZE(1) + 2 * JSON_STRING_SIZE(6);
     REQUIRE(expectedSize <= doc.memoryUsage());
+  }
+
+  SECTION("should duplicate a non-static JsonString key") {
+    obj[JsonString("hello", false)] = "world";
+    const size_t expectedSize = JSON_OBJECT_SIZE(1) + JSON_STRING_SIZE(6);
+    REQUIRE(expectedSize == doc.memoryUsage());
+  }
+
+  SECTION("should not duplicate a static JsonString key") {
+    obj[JsonString("hello", true)] = "world";
+    const size_t expectedSize = JSON_OBJECT_SIZE(1);
+    REQUIRE(expectedSize == doc.memoryUsage());
   }
 
   SECTION("should ignore null key") {

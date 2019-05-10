@@ -1,5 +1,5 @@
 # ArduinoJson - arduinojson.org
-# Copyright Benoit Blanchon 2014-2018
+# Copyright Benoit Blanchon 2014-2019
 # MIT License
 
 add_executable(JsonObjectTests 
@@ -11,6 +11,8 @@ add_executable(JsonObjectTests
 	invalid.cpp
 	isNull.cpp
 	iterator.cpp
+	memoryUsage.cpp
+	nesting.cpp
 	remove.cpp
 	size.cpp
 	std_string.cpp

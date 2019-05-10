@@ -1,5 +1,5 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #pragma once
@@ -26,11 +26,11 @@ inline VariantSlot* CollectionData::addSlot(MemoryPool* pool) {
 }
 
 inline VariantData* CollectionData::add(MemoryPool* pool) {
-  return addSlot(pool)->data();
+  return slotData(addSlot(pool));
 }
 
-template <typename TKey>
-inline VariantData* CollectionData::add(TKey key, MemoryPool* pool) {
+template <typename TAdaptedString>
+inline VariantData* CollectionData::add(TAdaptedString key, MemoryPool* pool) {
   VariantSlot* slot = addSlot(pool);
   if (!slotSetKey(slot, key, pool)) return 0;
   return slot->data();
@@ -41,8 +41,8 @@ inline void CollectionData::clear() {
   _tail = 0;
 }
 
-template <typename TKey>
-inline bool CollectionData::containsKey(const TKey& key) const {
+template <typename TAdaptedString>
+inline bool CollectionData::containsKey(const TAdaptedString& key) const {
   return getSlot(key) != 0;
 }
 
@@ -53,9 +53,9 @@ inline bool CollectionData::copyFrom(const CollectionData& src,
     VariantData* var;
     if (s->key() != 0) {
       if (s->ownsKey())
-        var = add(RamStringWrapper(s->key()), pool);
+        var = add(RamStringAdapter(s->key()), pool);
       else
-        var = add(ConstRamStringWrapper(s->key()), pool);
+        var = add(ConstRamStringAdapter(s->key()), pool);
     } else {
       var = add(pool);
     }
@@ -69,7 +69,7 @@ inline bool CollectionData::equalsObject(const CollectionData& other) const {
   size_t count = 0;
   for (VariantSlot* slot = _head; slot; slot = slot->next()) {
     VariantData* v1 = slot->data();
-    VariantData* v2 = other.get(wrapString(slot->key()));
+    VariantData* v2 = other.get(adaptString(slot->key()));
     if (!variantEquals(v1, v2)) return false;
     count++;
   }
@@ -88,8 +88,8 @@ inline bool CollectionData::equalsArray(const CollectionData& other) const {
   }
 }
 
-template <typename TKey>
-inline VariantSlot* CollectionData::getSlot(TKey key) const {
+template <typename TAdaptedString>
+inline VariantSlot* CollectionData::getSlot(TAdaptedString key) const {
   VariantSlot* slot = _head;
   while (slot) {
     if (key.equals(slot->key())) break;
@@ -112,8 +112,8 @@ inline VariantSlot* CollectionData::getPreviousSlot(VariantSlot* target) const {
   return 0;
 }
 
-template <typename TKey>
-inline VariantData* CollectionData::get(TKey key) const {
+template <typename TAdaptedString>
+inline VariantData* CollectionData::get(TAdaptedString key) const {
   VariantSlot* slot = getSlot(key);
   return slot ? slot->data() : 0;
 }
@@ -136,6 +136,24 @@ inline void CollectionData::remove(VariantSlot* slot) {
 
 inline void CollectionData::remove(size_t index) {
   remove(getSlot(index));
+}
+
+inline size_t CollectionData::memoryUsage() const {
+  size_t total = 0;
+  for (VariantSlot* s = _head; s; s = s->next()) {
+    total += sizeof(VariantSlot) + s->data()->memoryUsage();
+    if (s->ownsKey()) total += strlen(s->key()) + 1;
+  }
+  return total;
+}
+
+inline size_t CollectionData::nesting() const {
+  size_t maxChildNesting = 0;
+  for (VariantSlot* s = _head; s; s = s->next()) {
+    size_t childNesting = s->data()->nesting();
+    if (childNesting > maxChildNesting) maxChildNesting = childNesting;
+  }
+  return maxChildNesting + 1;
 }
 
 inline size_t CollectionData::size() const {

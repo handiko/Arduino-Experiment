@@ -1,5 +1,5 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #include <ArduinoJson.h>
@@ -19,7 +19,7 @@ void checkIsArray(TVariant var) {
 }
 
 void testArray(JsonArray value) {
-  DynamicJsonDocument doc;
+  DynamicJsonDocument doc(4096);
 
   JsonVariant var = doc.to<JsonVariant>();
   var.set(value);
@@ -44,7 +44,7 @@ void checkIsBool(TVariant var) {
 }
 
 void testBool(bool value) {
-  DynamicJsonDocument doc;
+  DynamicJsonDocument doc(4096);
   JsonVariant var = doc.to<JsonVariant>();
   var.set(value);
 
@@ -66,7 +66,7 @@ void checkIsFloat(TVariant var) {
 }
 
 void testFloat(double value) {
-  DynamicJsonDocument doc;
+  DynamicJsonDocument doc(4096);
   JsonVariant var = doc.to<JsonVariant>();
   var.set(value);
 
@@ -89,7 +89,7 @@ void checkIsInteger(TVariant var) {
 
 template <typename T>
 void testInteger(T value) {
-  DynamicJsonDocument doc;
+  DynamicJsonDocument doc(4096);
   JsonVariant var = doc.to<JsonVariant>();
   var.set(value);
 
@@ -112,7 +112,7 @@ void checkIsString(TVariant var) {
 }
 
 void testString(const char *value) {
-  DynamicJsonDocument doc;
+  DynamicJsonDocument doc(4096);
   JsonVariant var = doc.to<JsonVariant>();
   var.set(value);
 
@@ -122,7 +122,7 @@ void testString(const char *value) {
 
 TEST_CASE("JsonVariant::is()") {
   SECTION("JsonArray") {
-    DynamicJsonDocument doc;
+    DynamicJsonDocument doc(4096);
     JsonArray array = doc.to<JsonArray>();
     testArray(array);
   }
@@ -146,5 +146,17 @@ TEST_CASE("JsonVariant::is()") {
 
   SECTION("string") {
     testString("42");
+  }
+
+  SECTION("null") {
+    DynamicJsonDocument doc(4096);
+    deserializeJson(doc, "[null]");
+    JsonVariant v = doc[0];
+
+    REQUIRE(v.is<bool>() == false);
+    REQUIRE(v.is<char *>() == false);
+    REQUIRE(v.is<int>() == false);
+    REQUIRE(v.is<std::string>() == false);
+    REQUIRE(v.is<float>() == false);
   }
 }

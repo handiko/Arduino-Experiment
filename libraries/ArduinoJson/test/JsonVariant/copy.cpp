@@ -1,13 +1,13 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #include <ArduinoJson.h>
 #include <catch.hpp>
 
 TEST_CASE("JsonVariant::set(JsonVariant)") {
-  DynamicJsonDocument doc1;
-  DynamicJsonDocument doc2;
+  DynamicJsonDocument doc1(4096);
+  DynamicJsonDocument doc2(4096);
   JsonVariant var1 = doc1.to<JsonVariant>();
   JsonVariant var2 = doc2.to<JsonVariant>();
 

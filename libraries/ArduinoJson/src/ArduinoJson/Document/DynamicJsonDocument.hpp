@@ -1,61 +1,25 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #pragma once
 
-#include "JsonDocument.hpp"
+#include "BasicJsonDocument.hpp"
 
 #include <stdlib.h>  // malloc, free
 
 namespace ARDUINOJSON_NAMESPACE {
 
-class DynamicJsonDocument : public JsonDocument {
- public:
-  DynamicJsonDocument(size_t capa = ARDUINOJSON_DEFAULT_POOL_SIZE)
-      : JsonDocument(allocPool(addPadding(capa))) {}
-
-  DynamicJsonDocument(const DynamicJsonDocument& src)
-      : JsonDocument(allocPool(src.capacity())) {
-    copy(src);
+struct DefaultAllocator {
+  void* allocate(size_t n) {
+    return malloc(n);
   }
 
-  DynamicJsonDocument(const JsonDocument& src)
-      : JsonDocument(allocPool(src.capacity())) {
-    copy(src);
-  }
-
-  ~DynamicJsonDocument() {
-    freePool();
-  }
-
-  DynamicJsonDocument& operator=(const DynamicJsonDocument& src) {
-    reallocPoolIfTooSmall(src.memoryUsage());
-    copy(src);
-    return *this;
-  }
-
-  template <typename T>
-  DynamicJsonDocument& operator=(const JsonDocument& src) {
-    reallocPoolIfTooSmall(src.memoryUsage());
-    copy(src);
-    return *this;
-  }
-
- private:
-  MemoryPool allocPool(size_t capa) {
-    return MemoryPool(reinterpret_cast<char*>(malloc(capa)), capa);
-  }
-
-  void reallocPoolIfTooSmall(size_t requiredSize) {
-    if (requiredSize <= capacity()) return;
-    freePool();
-    replacePool(allocPool(addPadding(requiredSize)));
-  }
-
-  void freePool() {
-    free(memoryPool().buffer());
+  void deallocate(void* p) {
+    free(p);
   }
 };
+
+typedef BasicJsonDocument<DefaultAllocator> DynamicJsonDocument;
 
 }  // namespace ARDUINOJSON_NAMESPACE

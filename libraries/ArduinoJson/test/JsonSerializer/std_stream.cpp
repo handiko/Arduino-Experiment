@@ -1,5 +1,5 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #include <ArduinoJson.h>
@@ -7,7 +7,7 @@
 #include <sstream>
 
 TEST_CASE("operator<<(std::ostream)") {
-  DynamicJsonDocument doc;
+  DynamicJsonDocument doc(4096);
   std::ostringstream os;
 
   SECTION("JsonVariant containing false") {
@@ -37,7 +37,7 @@ TEST_CASE("operator<<(std::ostream)") {
     REQUIRE("{\"key\":\"value\"}" == os.str());
   }
 
-  SECTION("JsonObjectSubscript") {
+  SECTION("MemberProxy") {
     JsonObject object = doc.to<JsonObject>();
     object["key"] = "value";
 
@@ -55,7 +55,7 @@ TEST_CASE("operator<<(std::ostream)") {
     REQUIRE("[\"value\"]" == os.str());
   }
 
-  SECTION("JsonArraySubscript") {
+  SECTION("ElementProxy") {
     JsonArray array = doc.to<JsonArray>();
     array.add("value");
 

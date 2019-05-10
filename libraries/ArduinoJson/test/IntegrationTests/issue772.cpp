@@ -1,5 +1,5 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #include <ArduinoJson.h>
@@ -8,7 +8,8 @@
 // https://github.com/bblanchon/ArduinoJson/issues/772
 
 TEST_CASE("Issue772") {
-  DynamicJsonDocument doc1, doc2;
+  DynamicJsonDocument doc1(4096);
+  DynamicJsonDocument doc2(4096);
   DeserializationError err;
   std::string data =
       "{\"state\":{\"reported\":{\"timestamp\":\"2018-07-02T09:40:12Z\","

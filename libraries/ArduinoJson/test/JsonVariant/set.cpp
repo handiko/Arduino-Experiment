@@ -1,12 +1,12 @@
 // ArduinoJson - arduinojson.org
-// Copyright Benoit Blanchon 2014-2018
+// Copyright Benoit Blanchon 2014-2019
 // MIT License
 
 #include <ArduinoJson.h>
 #include <catch.hpp>
 
 TEST_CASE("JsonVariant and strings") {
-  DynamicJsonDocument doc;
+  DynamicJsonDocument doc(4096);
   JsonVariant variant = doc.to<JsonVariant>();
 
   SECTION("stores const char* by reference") {
@@ -68,6 +68,26 @@ TEST_CASE("JsonVariant and strings") {
     str = "hello";
     variant.set(str);
     str.replace(0, 5, "world");
+
+    REQUIRE(variant == "hello");
+  }
+
+  SECTION("stores static JsonString by reference") {
+    char str[16];
+
+    strcpy(str, "hello");
+    variant.set(JsonString(str, true));
+    strcpy(str, "world");
+
+    REQUIRE(variant == "hello");
+  }
+
+  SECTION("stores non-static JsonString by copy") {
+    char str[16];
+
+    strcpy(str, "hello");
+    variant.set(JsonString(str, false));
+    strcpy(str, "world");
 
     REQUIRE(variant == "hello");
   }
