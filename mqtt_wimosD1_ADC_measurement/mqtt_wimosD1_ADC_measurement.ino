@@ -29,11 +29,15 @@ void setupWiFi()
 
   Serial.println("Connecting ...");
 
+  digitalWrite(LED_BUILTIN, LOW);
+
   while (wifiMulti.run() != WL_CONNECTED) 
   {
     delay(250);
     Serial.print('.');
   }
+
+  digitalWrite(LED_BUILTIN, HIGH);
   
   Serial.println('\n');
   Serial.print("Connected to:\t");
@@ -119,6 +123,10 @@ void loop()
     {
       adcValue = analogRead(A0);
       snprintf(messages, 75, "ADC Value: %d", adcValue);
+    }
+    else
+    {
+      snprintf(messages, 50, "ADC is not enabled");
     }
 
     if(client.connected())
