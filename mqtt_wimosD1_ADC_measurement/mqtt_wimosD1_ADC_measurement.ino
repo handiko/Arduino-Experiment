@@ -130,10 +130,6 @@ void loop()
       snprintf(messagesStat, 50, "ADC reading is disabled");
     }
 
-    if(client.connected())
-    {
-      Serial.print("Still Connected, ");
-    }
     Serial.print("Sending messages:\t");
     Serial.println(messagesStat);
     Serial.println(messagesADC);
