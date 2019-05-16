@@ -11,8 +11,8 @@ PubSubClient client(espClient);
 const char* brokerUser = "handikogesang@gmail.com";
 const char* brokerPass = "45f02257";
 const char* broker = "mqtt.dioty.co";
-const char* adcTopic = "/handikogesang@gmail,com/adc";
-const char* statTopic = "/handikogesang@gmail.com/stat";
+const char* adcTopic = "/handikogesang@gmail,com/out/adc";
+const char* statTopic = "/handikogesang@gmail.com/out/stat";
 const char* inTopic = "/handikogesang@gmail.com/in";
 
 long currentTime, lastTime;
@@ -121,8 +121,9 @@ void loop()
     if(enADC)
     {
       adcValue = analogRead(A0);
-      snprintf(messagesStat, 50, "ADC reading is enabled");
-      snprintf(messagesADC, 50, "%d", adcValue);
+      
+      snprintf(messagesStat, 75, "ADC reading is enabled");
+      snprintf(messagesADC, 75, "ADC Value is: %d", adcValue);
     }
     else
     {
