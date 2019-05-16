@@ -122,7 +122,7 @@ void loop()
     {
       adcValue = analogRead(A0);
       
-      snprintf(messagesStat, 75, "ADC reading is enabled");
+      snprintf(messagesStat, 75, "Enabled");
       snprintf(messagesADC, 75, "%d", adcValue);
     }
     else
