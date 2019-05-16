@@ -11,7 +11,6 @@ PubSubClient client(espClient);
 const char* brokerUser = "handikogesang@gmail.com";
 const char* brokerPass = "45f02257";
 const char* broker = "mqtt.dioty.co";
-const char* outTopic = "/handikogesang@gmail.com/out";
 const char* adcTopic = "/handikogesang@gmail,com/adc";
 const char* statTopic = "/handikogesang@gmail.com/stat";
 const char* inTopic = "/handikogesang@gmail.com/in";
@@ -136,7 +135,7 @@ void loop()
     }
     Serial.print("Sending messages:\t");
     Serial.println(messagesStat);
-    erial.println(messagesADC);
+    Serial.println(messagesADC);
     
     client.publish(statTopic, messagesStat);
     client.publish(adcTopic, messagesADC);
