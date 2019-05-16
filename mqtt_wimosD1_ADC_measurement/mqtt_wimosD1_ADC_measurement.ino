@@ -12,11 +12,11 @@ const char* brokerUser = "handikogesang@gmail.com";
 const char* brokerPass = "45f02257";
 const char* broker = "mqtt.dioty.co";
 const char* outTopic = "/handikogesang@gmail.com/out";
+const char* adcTopic = "/handikogesang@gmail,com/adc";
+const char* statTopic = "/handikogesang@gmail.com/stat";
 const char* inTopic = "/handikogesang@gmail.com/in";
 
 long currentTime, lastTime;
-//int count = 0;
-char messages[50];
 bool enADC = false;
 
 void setupWiFi()
@@ -105,6 +105,9 @@ void setup()
 void loop()
 {
   int adcValue;
+
+  char messagesStat[50];
+  char messagesADC[50];
   
   if(!client.connected())
   {
@@ -116,17 +119,15 @@ void loop()
   currentTime = millis();
   if(currentTime - lastTime > 2000)
   {
-    //count++;
-    //snprintf(messages, 75, "Count: %d", count);
-
     if(enADC)
     {
       adcValue = analogRead(A0);
-      snprintf(messages, 75, "ADC Value: %d", adcValue);
+      snprintf(messagesStat, 50, "ADC reading is enabled");
+      snprintf(messagesADC, 50, "%d", adcValue);
     }
     else
     {
-      snprintf(messages, 50, "ADC is not enabled");
+      snprintf(messagesStat, 50, "ADC reading is disabled");
     }
 
     if(client.connected())
@@ -134,9 +135,11 @@ void loop()
       Serial.print("Still Connected, ");
     }
     Serial.print("Sending messages:\t");
-    Serial.println(messages);
+    Serial.println(messagesStat);
+    erial.println(messagesADC);
     
-    client.publish(outTopic, messages);
+    client.publish(statTopic, messagesStat);
+    client.publish(adcTopic, messagesADC);
     
     lastTime = millis();
   }
