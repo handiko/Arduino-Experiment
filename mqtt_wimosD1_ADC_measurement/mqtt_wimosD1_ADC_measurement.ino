@@ -103,7 +103,7 @@ void setup()
 
 void loop()
 {
-  int adcValue;
+  float adcValue;
 
   char messagesStat[50];
   char messagesADC[50];
@@ -120,10 +120,10 @@ void loop()
   {
     if(enADC)
     {
-      adcValue = analogRead(A0);
+      adcValue = 1.0 * analogRead(A0) / 1024;
       
       snprintf(messagesStat, 75, "Enabled");
-      snprintf(messagesADC, 75, "%d", adcValue);
+      dtostrf(adcValue, 1, 4, messagesADC);
     }
     else
     {
