@@ -11,9 +11,9 @@ PubSubClient client(espClient);
 const char* brokerUser = "handikogesang@gmail.com";
 const char* brokerPass = "45f02257";
 const char* broker = "mqtt.dioty.co";
-const char* adcTopic = "/handikogesang@gmail,com/out/adc";
+const char* adcTopic =  "/handikogesang@gmail.com/out/adc";
 const char* statTopic = "/handikogesang@gmail.com/out/stat";
-const char* inTopic = "/handikogesang@gmail.com/in";
+const char* inTopic =   "/handikogesang@gmail.com/in";
 
 long currentTime, lastTime;
 bool enADC = false;
@@ -139,7 +139,11 @@ void loop()
     Serial.println(messagesADC);
     
     client.publish(statTopic, messagesStat);
-    client.publish(adcTopic, messagesADC);
+    
+    if(enADC)
+    {
+      client.publish(adcTopic, messagesADC);
+    }
     
     lastTime = millis();
   }
