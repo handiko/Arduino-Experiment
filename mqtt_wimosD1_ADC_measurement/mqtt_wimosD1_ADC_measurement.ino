@@ -116,7 +116,7 @@ void loop()
   client.loop();
 
   currentTime = millis();
-  if(currentTime - lastTime > 2000)
+  if(currentTime - lastTime > 1500)
   {
     if(enADC)
     {
@@ -127,7 +127,7 @@ void loop()
     }
     else
     {
-      snprintf(messagesStat, 50, "ADC reading is disabled");
+      snprintf(messagesStat, 50, "Disabled");
     }
 
     Serial.print("Sending messages:\t");
