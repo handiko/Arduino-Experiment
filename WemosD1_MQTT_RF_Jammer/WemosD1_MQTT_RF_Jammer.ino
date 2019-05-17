@@ -22,10 +22,10 @@
 
 #include <AD9851.h>
 
-#define RST   12
-#define DATA  13
+#define RST   13
+#define DATA  12
 #define FQ    14
-#define CLK   15
+#define CLK   16
 
 DDS dds;
 
@@ -183,14 +183,17 @@ void loop()
 
   client.loop();
 
+  if(enDDS)
+  {
+    writeFreq(dds, random(min_freq, max_freq)); 
+  }
+
   currentTime = millis();
   
   if(currentTime - lastTime > 1500)
   {
     if(enDDS)
     {
-      writeFreq(dds, random(min_freq, max_freq));
-      
       snprintf(messageEn, 75, "Enabled");
       snprintf(messageMaxFreq, 75, "%lu", max_freq);
       snprintf(messageMinFreq, 75, "%lu", min_freq);

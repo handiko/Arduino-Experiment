@@ -16,10 +16,10 @@
  */
 #include <AD9851.h>
 
-#define RST   12
-#define DATA  13
+#define RST   13
+#define DATA  12
 #define FQ    14
-#define CLK   15
+#define CLK   16
 
 DDS dds;
 
