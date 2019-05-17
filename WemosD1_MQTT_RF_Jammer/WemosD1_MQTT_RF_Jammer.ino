@@ -79,6 +79,7 @@ void reconnect()
       client.subscribe(inTopicMaxFreq);
       client.subscribe(inTopicMinFreq);
     }
+    
     else
     {
       Serial.println("Connecting");
@@ -90,23 +91,43 @@ void reconnect()
 
 void callback(char* topic, byte* payload, unsigned int len)
 {
+  char buff[50] = {};
+  
   Serial.print("Received messages: ");
   Serial.println(topic);
   
   for(unsigned int i=0; i<len; i++)
   {
     Serial.print((char) payload[i]);
+    
+    buff[i] = (char) payload[i];
+  }
 
+  String str((char*)buff);
+
+  if(strcmp(topic, inTopicEnable) == 0)
+  {
     if(len == 1 && payload[0] == '1')
     {
       digitalWrite(LED_BUILTIN, LOW);
       enDDS = true;
     }
+    
     else if(len == 1 && payload[0] == '0')
     {
       digitalWrite(LED_BUILTIN, HIGH);
       enDDS = false;
     }
+  }
+
+  else if(strcmp(topic, inTopicMaxFreq) == 0)
+  {
+    max_freq = strtoul(str.c_str(), NULL, 0);
+  }
+
+  else if(strcmp(topic, inTopicMinFreq) == 0)
+  {
+    min_freq = strtoul(str.c_str(), NULL, 0);
   }
   
   Serial.println();
@@ -136,6 +157,8 @@ void setup()
 void loop()
 {
   char messageEn[50];
+  char messageMaxFreq[50];
+  char messageMinFreq[50];
   
   if(!client.connected())
   {
@@ -153,7 +176,10 @@ void loop()
       writeFreq(dds, random(min_freq, max_freq));
       
       snprintf(messageEn, 75, "Enabled");
+      snprintf(messageMaxFreq, 75, "%lu", max_freq);
+      snprintf(messageMinFreq, 75, "%lu", min_freq);
     }
+    
     else
     {
       snprintf(messageEn, 50, "Disabled");
@@ -163,6 +189,20 @@ void loop()
     Serial.println(messageEn);
     
     client.publish(outTopicStatus, messageEn);
+
+    if(enDDS)
+    {
+      Serial.print("Sending messages:\t");
+      Serial.println(messageMaxFreq);
+
+      Serial.print("Sending messages:\t");
+      Serial.println(messageMinFreq);
+
+      client.publish(outTopicMaxFreq, messageMaxFreq);
+      client.publish(outTopicMinFreq, messageMinFreq); 
+    }
+
+    Serial.println();
     
     lastTime = millis();
   }
