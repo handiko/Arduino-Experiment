@@ -125,13 +125,11 @@ void callback(char* topic, byte* payload, unsigned int len)
   {
     if(len == 1 && payload[0] == '1')
     {
-      digitalWrite(LED_BUILTIN, LOW);
       enDDS = true;
     }
     
     else if(len == 1 && payload[0] == '0')
     {
-      digitalWrite(LED_BUILTIN, HIGH);
       enDDS = false;
     }
   }
@@ -185,7 +183,14 @@ void loop()
 
   if(enDDS)
   {
+    digitalWrite(LED_BUILTIN, LOW);
     writeFreq(dds, random(min_freq, max_freq)); 
+  }
+  
+  else
+  {
+    digitalWrite(LED_BUILTIN, HIGH);
+    dds_reset(dds);
   }
 
   currentTime = millis();
